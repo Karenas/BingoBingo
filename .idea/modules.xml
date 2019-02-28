@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/BingoBingo.iml" filepath="$PROJECT_DIR$/BingoBingo.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/mg_baseModule/mg_baseModule.iml" filepath="$PROJECT_DIR$/mg_baseModule/mg_baseModule.iml" />
     </modules>
   </component>
 </project>
