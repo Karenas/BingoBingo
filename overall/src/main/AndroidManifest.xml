@@ -1,0 +1,14 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.gmself.studio.mg.bingobingo.overall" >
+
+    <application
+        android:allowBackup="false"
+        >
+
+        <activity android:name=".ui.activity.BingoHomeActivity">
+
+        </activity>
+
+    </application>
+
+</manifest>
