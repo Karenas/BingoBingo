@@ -7,7 +7,6 @@ import android.support.annotation.LayoutRes;
 import android.support.annotation.Nullable;
 import android.view.WindowManager;
 
-import butterknife.ButterKnife;
 
 
 /**
@@ -45,7 +44,6 @@ public abstract class BaseActivity extends MPermissionsActivity implements Activ
      */
     protected void onCreateCustom() {
         setContentView(setLayoutID());
-        ButterKnife.bind(this);
 
         initView();//初始化控件
         setListener();//设置监听

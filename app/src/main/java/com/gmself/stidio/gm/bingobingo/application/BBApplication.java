@@ -1,8 +1,11 @@
 package com.gmself.stidio.gm.bingobingo.application;
 
 import android.app.Application;
+import android.os.Environment;
+import android.text.TextUtils;
 
 import com.alibaba.android.arouter.launcher.ARouter;
+import com.gmself.studio.mg.basemodule.log_tool.Logger;
 
 /**
  * Created by guomeng on 2/28.
@@ -17,6 +20,7 @@ public class BBApplication extends Application {
         super.onCreate();
 
         initARouter();
+        initLogger();
     }
 
 
@@ -26,5 +30,9 @@ public class BBApplication extends Application {
             ARouter.openDebug();
         }
         ARouter.init(this);
+    }
+
+    private void initLogger(){
+        Logger.init(this);
     }
 }
