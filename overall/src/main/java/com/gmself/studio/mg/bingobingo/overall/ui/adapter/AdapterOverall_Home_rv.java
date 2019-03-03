@@ -10,7 +10,10 @@ import android.widget.Toast;
 
 import com.gmself.studio.mg.bingobingo.overall.R;
 import com.gmself.studio.mg.bingobingo.overall.entity.EntityHomeRvItem;
+import com.gmself.studio.mg.bingobingo.overall.ui.customView.LinearLayout_homeRv;
+import com.gmself.studio.mg.bingobingo.overall.ui.listener.OnViewGestureListener;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class AdapterOverall_Home_rv extends RecyclerView.Adapter<AdapterOverall_Home_rv.MyViewHolder>
@@ -18,10 +21,12 @@ public class AdapterOverall_Home_rv extends RecyclerView.Adapter<AdapterOverall_
     private List<EntityHomeRvItem> mList;
     private Context mContext;
 
+//    private LinearLayout_homeRv[] customLLs;
+
     public AdapterOverall_Home_rv(Context mContext, List<EntityHomeRvItem> list){
         this.mContext=mContext;
         this.mList=list;
-
+//        customLLs = new LinearLayout_homeRv[list.size()];
     }
 
     public void removeData(int position) {
@@ -65,11 +70,20 @@ public class AdapterOverall_Home_rv extends RecyclerView.Adapter<AdapterOverall_
     class MyViewHolder extends RecyclerView.ViewHolder
     {
         TextView name;
+//        LinearLayout_homeRv layout;
 
         public MyViewHolder(View view)
         {
             super(view);
             name = view.findViewById(R.id.overall_home_rv_item_name_tv);
+//            layout = view.findViewById(R.id.overall_home_rv_item_ll);
         }
     }
+
+//    OnViewGestureListener onViewGestureListener = new OnViewGestureListener() {
+//        @Override
+//        public void onGesture(float x, float y) {
+//
+//        }
+//    };
 }

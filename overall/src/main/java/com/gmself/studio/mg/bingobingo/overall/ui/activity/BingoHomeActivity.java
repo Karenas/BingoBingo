@@ -12,6 +12,7 @@ import com.gmself.studio.mg.basemodule.base.ui.recyclerview.DividerGridItemDecor
 import com.gmself.studio.mg.bingobingo.overall.R;
 import com.gmself.studio.mg.bingobingo.overall.entity.EntityHomeRvItem;
 import com.gmself.studio.mg.bingobingo.overall.ui.adapter.AdapterOverall_Home_rv;
+import com.gmself.studio.mg.bingobingo.overall.ui.customView.RecyclerView_home;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,7 +30,7 @@ public class BingoHomeActivity extends BaseActivity{
     Random random = new Random();
 
 
-    private RecyclerView mRecyclerView;
+    private RecyclerView_home mRecyclerView;
 
     private AdapterOverall_Home_rv adapter;
 
