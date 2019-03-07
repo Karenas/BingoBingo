@@ -1,6 +1,8 @@
 package com.gmself.studio.mg.bingobingo.overall.ui.activity;
 
 import android.graphics.Color;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -56,6 +58,10 @@ public class BingoHomeActivity extends BaseActivity{
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
 
         mRecyclerView.setAdapter(adapter);
+
+
+
+
     }
 
     @Override

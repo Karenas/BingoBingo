@@ -11,6 +11,7 @@
             <option value="$PROJECT_DIR$/app" />
             <option value="$PROJECT_DIR$/mg_baseModule" />
             <option value="$PROJECT_DIR$/overall" />
+            <option value="$PROJECT_DIR$/superflyerpage" />
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />

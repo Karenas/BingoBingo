@@ -6,9 +6,9 @@ package com.gmself.studio.mg.basemodule.arouter;
 
 public enum ENUM_RouterE {
 
-    ACTIVITY_OVERALL_HOME("/overall/BingoHomeActivity"); //外壳首页
+    ACTIVITY_OVERALL_HOME("/overall/BingoHomeActivity"),//外壳首页
 
-
+    ACTIVITY_FREE_FLYER_HOME("/freeFlyer/FreeFlyerActivity"),
     ;
 
     private String path;

@@ -1,0 +1,9 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.gmself.stidio.gm.superflyerpage" >
+
+    <application >
+        <activity android:name=".ui.FreeFlyerActivity"/>
+
+    </application>
+
+</manifest>
