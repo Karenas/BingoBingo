@@ -7,6 +7,7 @@
       <module fileurl="file://$PROJECT_DIR$/bb_ocr/bb_ocr.iml" filepath="$PROJECT_DIR$/bb_ocr/bb_ocr.iml" />
       <module fileurl="file://$PROJECT_DIR$/mg_baseModule/mg_baseModule.iml" filepath="$PROJECT_DIR$/mg_baseModule/mg_baseModule.iml" />
       <module fileurl="file://$PROJECT_DIR$/overall/overall.iml" filepath="$PROJECT_DIR$/overall/overall.iml" />
+      <module fileurl="file://$PROJECT_DIR$/superflyerpage/superflyerpage.iml" filepath="$PROJECT_DIR$/superflyerpage/superflyerpage.iml" />
     </modules>
   </component>
 </project>

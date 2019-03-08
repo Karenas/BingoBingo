@@ -21,7 +21,7 @@ public class MainActivity extends AppCompatActivity {
 
         SystemClock.sleep(1000);
 
-        Manager_RouterM.getInstance().router_goto(ENUM_RouterE.ACTIVITY_OVERALL_HOME);
+        Manager_RouterM.getInstance().router_goto(ENUM_RouterE.ACTIVITY_FREE_FLYER_HOME);
 
     }
 

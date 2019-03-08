@@ -34,7 +34,7 @@ import java.util.Random;
 @Route(path = "/overall/BingoHomeActivity")
 public class BingoHomeActivity extends BaseActivity{
 
-    private Random random = new Random();
+    Random random = new Random();
 
 
     private RecyclerView_home mRecyclerView;
@@ -116,9 +116,9 @@ public class BingoHomeActivity extends BaseActivity{
     private void initMainList(){
         mailList = new ArrayList<>();
         EntityHomeRvItem rvItem;
-        for (int i = 0; i < functionList.length; i++){
+        for (int i = 0; i < 10; i++){
             rvItem = new EntityHomeRvItem();
-            rvItem.setName(functionList[i]);
+            rvItem.setName("名称"+i);
             rvItem.setBackGroundColor(Color.argb(randomColor(), randomColor(), randomColor(), randomColor()));
             rvItem.setHeight(randomHeight());
             mailList.add(rvItem);

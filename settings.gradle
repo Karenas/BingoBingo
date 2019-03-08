@@ -1,1 +1,1 @@
-include ':app', ':mg_baseModule', ':overall', ':bb_ocr'
+include ':app', ':mg_baseModule', ':overall', ':bb_ocr', ':superflyerpage'
