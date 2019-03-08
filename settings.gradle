@@ -1,1 +1,1 @@
-include ':app', ':mg_baseModule', ':overall'
+include ':app', ':mg_baseModule', ':overall', ':bb_ocr'

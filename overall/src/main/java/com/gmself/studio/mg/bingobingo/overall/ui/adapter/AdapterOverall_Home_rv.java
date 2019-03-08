@@ -5,6 +5,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -16,11 +17,12 @@ import com.gmself.studio.mg.bingobingo.overall.ui.listener.OnViewGestureListener
 import java.util.ArrayList;
 import java.util.List;
 
-public class AdapterOverall_Home_rv extends RecyclerView.Adapter<AdapterOverall_Home_rv.MyViewHolder>
+public class AdapterOverall_Home_rv extends RecyclerView.Adapter<AdapterOverall_Home_rv.MyViewHolder> implements View.OnClickListener,View.OnLongClickListener
 {
     private List<EntityHomeRvItem> mList;
     private Context mContext;
 
+    private OnItemClickListener mOnItemClickListener;
 //    private LinearLayout_homeRv[] customLLs;
 
     public AdapterOverall_Home_rv(Context mContext, List<EntityHomeRvItem> list){
@@ -29,16 +31,24 @@ public class AdapterOverall_Home_rv extends RecyclerView.Adapter<AdapterOverall_
 //        customLLs = new LinearLayout_homeRv[list.size()];
     }
 
-    public void removeData(int position) {
-        mList.remove(position);
-        notifyItemRemoved(position);
+    public interface OnItemClickListener
+    {
+        void onItemClick(View view, int position);
+        void onItemLongClick(View view, int position);
     }
+
+    public void setOnItemClickListener(OnItemClickListener itemClickListener){
+        this.mOnItemClickListener = itemClickListener;
+    }
+
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType)
     {
         View view= LayoutInflater.from(mContext).inflate(R.layout.adapter_overall_rv_item_home, parent,
                 false);
         MyViewHolder holder = new MyViewHolder(view);
+        view.setOnClickListener(this);
+        view.setOnLongClickListener(this);
         return holder;
     }
 
@@ -80,10 +90,19 @@ public class AdapterOverall_Home_rv extends RecyclerView.Adapter<AdapterOverall_
         }
     }
 
-//    OnViewGestureListener onViewGestureListener = new OnViewGestureListener() {
-//        @Override
-//        public void onGesture(float x, float y) {
-//
-//        }
-//    };
+    @Override
+    public void onClick(View view) {
+        if (mOnItemClickListener != null) {
+            mOnItemClickListener.onItemClick(view,(int)view.getTag());
+        }
+    }
+
+    @Override
+    public boolean onLongClick(View view) {
+        if (mOnItemClickListener != null) {
+            mOnItemClickListener.onItemLongClick(view,(int)view.getTag());
+        }
+        return true;
+    }
+
 }

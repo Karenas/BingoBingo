@@ -1,0 +1,12 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.gmself.studio.mg.ocr" >
+
+    <application>
+        <activity android:name=".OCR_MainActivity"
+            android:launchMode="singleTask">
+
+        </activity>
+        
+    </application>
+    
+</manifest>

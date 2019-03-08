@@ -5,7 +5,8 @@
         android:allowBackup="false"
         >
 
-        <activity android:name=".ui.activity.BingoHomeActivity">
+        <activity android:name=".ui.activity.BingoHomeActivity"
+            android:launchMode="singleTask">
 
         </activity>
 
