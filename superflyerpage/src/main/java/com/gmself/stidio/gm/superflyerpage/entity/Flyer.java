@@ -1,5 +1,9 @@
 package com.gmself.stidio.gm.superflyerpage.entity;
 
+import android.content.Context;
+import android.graphics.Color;
+import android.view.ViewGroup;
+
 import com.gmself.stidio.gm.superflyerpage.ui.customView.FreeItemView;
 
 /**
@@ -18,19 +22,36 @@ public class Flyer {
     private String info;
     private int imageResID;
 
-    private float x;
-    private float y;
+    private float x = 0; //当前x坐标（相对于viewgroup）
+    private float y = 0; //当前y坐标（相对于viewgroup）
+
+    private int width = 60;
+    private int height = 60;
 
     private Flyer previousFlyer; //上一个
     private Flyer nextFlyer; //下一个
 
 
+    public void addToGroup(ViewGroup viewGroup){
+//        view.measure(width, height);
+        viewGroup.addView(view);
+    }
+
+    public void initView(Context mContext) {
+        view = new FreeItemView(mContext, width, height);
+//        view.setXY(x, y);
+        view.setBackgroundColor(Color.BLACK);
+    }
+
     public FreeItemView getView() {
         return view;
     }
 
-    public void setView(FreeItemView view) {
-        this.view = view;
+    public void moveTo(float x, float y){
+        this.x = x;
+        this.y = y;
+        view.setTranslationX(x);
+        view.setTranslationY(y);
     }
 
     public double getMoney() {
@@ -88,4 +109,5 @@ public class Flyer {
     public void setNextFlyer(Flyer nextFlyer) {
         this.nextFlyer = nextFlyer;
     }
+
 }

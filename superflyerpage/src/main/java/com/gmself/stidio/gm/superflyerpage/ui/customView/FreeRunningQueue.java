@@ -1,8 +1,12 @@
 package com.gmself.stidio.gm.superflyerpage.ui.customView;
 
 import android.content.Context;
+import android.os.Handler;
+import android.os.Message;
+import android.os.SystemClock;
 import android.view.ViewGroup;
 
+import com.gmself.stidio.gm.superflyerpage.animator_roaming.AnimatorPath;
 import com.gmself.stidio.gm.superflyerpage.entity.Flyer;
 
 /**
@@ -13,12 +17,12 @@ public class FreeRunningQueue {
     private Flyer flyer;
     private Context mContext;
 
-    public FreeRunningQueue(Context context, int max) {
+    public FreeRunningQueue(Context context, int max, ViewGroup viewGroup) {
         this.mContext = context;
-        autoInit(max);
+        autoInit(max, viewGroup);
     }
 
-    private void autoInit(int max){
+    private void autoInit(int max, ViewGroup viewGroup){
         Flyer flyer = null;
         Flyer previousFlyer = null;
 
@@ -30,9 +34,21 @@ public class FreeRunningQueue {
                 firstFlyer = flyer;
             }
 
-            flyer.setView(new FreeItemView(mContext));
+            if (previousFlyer == null){
+                flyer.setX(150);
+                flyer.setY(950);
+            }else {
+                flyer.setX(previousFlyer.getX() + 100);
+                flyer.setY(950);
+            }
+
+            flyer.initView(mContext);
             flyer.setInfo("信息："+i);
+
             flyer.setPreviousFlyer(previousFlyer);
+            flyer.addToGroup(viewGroup);
+
+
 
             previousFlyer = flyer;
 
@@ -58,16 +74,63 @@ public class FreeRunningQueue {
         this.flyer.setNextFlyer(flyer);
     }
 
-    public void runOn(ViewGroup viewGroup){
+    public void run(float step){
         boolean endFlag = false;
 
         Flyer flyer = this.flyer;
+        AnimatorPath animatorPath;
+
         while (!endFlag){
-            viewGroup.addView(flyer.getView());
             flyer = flyer.getNextFlyer();
 
-        }
+//            flyer.moveTo(flyer.getX() + step, flyer.getY());
+            animatorPath = new AnimatorPath();
+            animatorPath.moveTo(flyer.getX(), flyer.getY());
+//            animatorPath.lineTo(flyer.getX() + step, flyer.getY());
+//            animatorPath.lineTo(flyer.getX(), flyer.getY());
+            animatorPath.cubicTo(flyer.getX(), flyer.getY(), flyer.getX()+(step/2), flyer.getY()+200, flyer.getX() + step, flyer.getY());
+//
+            animatorPath.startAnimation(flyer.getView(), 5000);
 
+            if (flyer == this.flyer){
+                endFlag = true;
+            }
+        }
     }
+
+
+
+
+
+//    public void run(final float step){
+//        Thread thread = new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+//                while (true){
+//                    SystemClock.sleep(10);
+//                    moveAll(step);
+//                }
+//            }
+//        });
+//        thread.start();
+//    }
+//
+//
+//    private void moveAll(float step){
+//        boolean endFlag = false;
+//
+//        Flyer flyer = this.flyer;
+//        Message msg;
+//
+//        while (!endFlag){
+//            flyer = flyer.getNextFlyer();
+//
+//            flyer.moveTo(flyer.getX() + step, flyer.getY());
+//
+//            if (flyer == this.flyer){
+//                endFlag = true;
+//            }
+//        }
+//    }
 
 }
