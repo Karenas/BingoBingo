@@ -25,8 +25,8 @@ public class Flyer {
     private float x = 0; //当前x坐标（相对于viewgroup）
     private float y = 0; //当前y坐标（相对于viewgroup）
 
-    private int width = 60;
-    private int height = 60;
+    private int width = 100;
+    private int height = 100;
 
     private Flyer previousFlyer; //上一个
     private Flyer nextFlyer; //下一个

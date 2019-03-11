@@ -34,7 +34,7 @@ import java.util.Random;
 @Route(path = "/overall/BingoHomeActivity")
 public class BingoHomeActivity extends BaseActivity{
 
-    Random random = new Random();
+    private static final Random random = new Random();
 
 
     private RecyclerView_home mRecyclerView;
@@ -43,7 +43,7 @@ public class BingoHomeActivity extends BaseActivity{
 
     private List<EntityHomeRvItem> mailList;
 
-    private String[] functionList = {"图片文字识别", "待开放", "待开放", "待开放", "待开放", "待开放", "待开放", "待开放"};
+    private static final String[] functionList = {"图片文字识别", "动效展示", "待开放", "待开放", "待开放", "待开放", "待开放", "待开放", "待开放"};
 
     @Override
     protected int setLayoutID() {
@@ -102,6 +102,9 @@ public class BingoHomeActivity extends BaseActivity{
                     case 0:
                         Manager_RouterM.getInstance().router_goto(ENUM_RouterE.ACTIVITY_OCR_MAIN);
                         break;
+                    case 1:
+                        Manager_RouterM.getInstance().router_goto(ENUM_RouterE.ACTIVITY_FREE_FLYER_HOME);
+                        break;
                 }
 
             }
@@ -116,9 +119,9 @@ public class BingoHomeActivity extends BaseActivity{
     private void initMainList(){
         mailList = new ArrayList<>();
         EntityHomeRvItem rvItem;
-        for (int i = 0; i < 10; i++){
+        for (int i = 0; i < functionList.length; i++){
             rvItem = new EntityHomeRvItem();
-            rvItem.setName("名称"+i);
+            rvItem.setName(functionList[i]);
             rvItem.setBackGroundColor(Color.argb(randomColor(), randomColor(), randomColor(), randomColor()));
             rvItem.setHeight(randomHeight());
             mailList.add(rvItem);

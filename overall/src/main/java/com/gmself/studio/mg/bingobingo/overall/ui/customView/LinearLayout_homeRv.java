@@ -189,7 +189,7 @@ public class LinearLayout_homeRv extends LinearLayout{
     private void startCancelAnimators() {
         setCameraDistance(scale *2);
 
-        AnimatorSet set=new AnimatorSet();
+        AnimatorSet set = new AnimatorSet();
         set.playTogether(
 //                ObjectAnimator.ofFloat(this,"rotationX",0,360),//绕X轴翻转
                 ObjectAnimator.ofFloat(this,"rotationY",-20, 0),//绕Y轴旋转

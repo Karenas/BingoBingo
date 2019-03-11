@@ -1,4 +1,4 @@
-package com.gmself.stidio.gm.superflyerpage.animator_roaming;
+package com.gmself.studio.mg.basemodule.animation.animator_roaming;
 
 /**
  * Created by guomeng on 3/10.

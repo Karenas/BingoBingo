@@ -1,4 +1,4 @@
-package com.gmself.stidio.gm.superflyerpage.animator_roaming;
+package com.gmself.studio.mg.basemodule.animation.animator_roaming;
 
 import android.animation.TypeEvaluator;
 
@@ -7,11 +7,11 @@ import android.animation.TypeEvaluator;
  */
 
 public class PathEvaluator implements TypeEvaluator<PathPoint>{
+    float x = 0, y = 0;
     @Override
     public PathPoint evaluate(float t, PathPoint startValue, PathPoint endValue) {
         //t  动画执行的百分比
 
-        float x = 0, y = 0;
         //按照运动类型
         if (endValue.mOperation == PathPoint.CUBIC){ //按照贝塞尔曲线计算
             float oneMinusT = 1 - t;

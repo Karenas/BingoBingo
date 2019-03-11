@@ -28,10 +28,10 @@ public class FreeFlyerActivity extends BaseActivity{
     public void initView() {
         FrameLayout layout = findViewById(R.id.freeflyer_home_content_fl);
 
-        FreeRunningQueue queue = new FreeRunningQueue(this, 5, layout);
+        FreeRunningQueue queue = new FreeRunningQueue(this, 9, layout);
         flyer = queue.getFlyer();
 
-        queue.run(400);
+        queue.run();
     }
 
     @Override
@@ -48,5 +48,8 @@ public class FreeFlyerActivity extends BaseActivity{
 //        }
     }
 
-
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+    }
 }
