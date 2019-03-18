@@ -1,5 +1,6 @@
 package com.gmself.stidio.gm.superflyerpage.ui.customView;
 
+import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.content.Context;
 import android.os.SystemClock;
@@ -7,6 +8,8 @@ import android.util.DisplayMetrics;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 
+import com.gmself.stidio.gm.superflyerpage.constant.MoveTrackManager;
+import com.gmself.stidio.gm.superflyerpage.ui.listener.FlyerViewOnClickListener;
 import com.gmself.studio.mg.basemodule.animation.animator_roaming.AnimatorPath;
 import com.gmself.stidio.gm.superflyerpage.entity.Flyer;
 
@@ -17,17 +20,16 @@ import com.gmself.stidio.gm.superflyerpage.entity.Flyer;
 public class FreeRunningQueue {
     private Flyer flyer;
     private Context mContext;
-    private AnimatorPath animatorPath;
 
 //    private float minX;
     private float maxX;
 //    private float minY;
     private float maxY;
 
-    public FreeRunningQueue(Context context, int max, ViewGroup viewGroup) {
+    public FreeRunningQueue(Context context, int max, ViewGroup viewGroup, FlyerViewOnClickListener onClickListener) {
         this.mContext = context;
         calculateWidthHeight();
-        autoInit(max, viewGroup);
+        autoInit(max, viewGroup, onClickListener);
     }
 
     private void calculateWidthHeight(){
@@ -38,7 +40,7 @@ public class FreeRunningQueue {
         this.maxY = outMetrics.heightPixels;
     }
 
-    private void autoInit(int max, ViewGroup viewGroup){
+    private void autoInit(int max, ViewGroup viewGroup, FlyerViewOnClickListener onClickListener){
         Flyer flyer = null;
         Flyer previousFlyer = null;
 
@@ -50,15 +52,12 @@ public class FreeRunningQueue {
                 firstFlyer = flyer;
             }
 
-            if (previousFlyer == null){
-                flyer.setX(150);
-                flyer.setY(950);
-            }else {
-                flyer.setX(previousFlyer.getX() + 100);
-                flyer.setY(950);
-            }
+            flyer.setId(i);
 
             flyer.initView(mContext);
+            flyer.moveTo(maxX, maxY*2/3);
+            flyer.setOnClickListener(onClickListener);
+
             flyer.setInfo("信息："+i);
 
             flyer.setPreviousFlyer(previousFlyer);
@@ -83,12 +82,36 @@ public class FreeRunningQueue {
         return flyer;
     }
 
+    /**
+     * 添加一个Flyer
+     * */
     public void addFlyer(Flyer flyer){
         flyer.setNextFlyer(this.flyer.getNextFlyer());
         flyer.setPreviousFlyer(this.flyer);
         this.flyer.setNextFlyer(flyer);
     }
 
+    /**
+     * 抓出一个Flyer
+     *
+     * @param flyer 要抓出的对象
+     * */
+    public void CatchOutFlyer(Flyer flyer){
+        Flyer next = flyer.getNextFlyer();
+        Flyer prev = flyer.getPreviousFlyer();
+
+        flyer.getPreviousFlyer().setNextFlyer(next);
+        flyer.getNextFlyer().setPreviousFlyer(prev);
+
+        if (this.flyer == flyer){ //如果当前flyer正好是要抓走的，则将其指为下一个
+            this.flyer = flyer.getNextFlyer();
+        }
+
+    }
+
+    /**
+     * 启动属性动画
+     * */
     public void run(){
         boolean endFlag = false;
 
@@ -97,19 +120,18 @@ public class FreeRunningQueue {
         int waitT = 0;
 
         while (!endFlag){
-            flyer = flyer.getNextFlyer();
-
-            animatorPath = new AnimatorPath();
-            animatorPath.moveTo(maxX, maxY*2/3);
-            animatorPath.cubicTo(maxX+200, maxY*2/3, (maxX/2), maxY*2/3+300, 0-200, maxY*2/3);
-//            animatorPath.moveTo(flyer.getX(), flyer.getY());
-//            animatorPath.cubicTo(flyer.getX(), flyer.getY(), flyer.getX()+(step/2), flyer.getY()+200, flyer.getX() + step, flyer.getY());
-
-            animatorPath.startAnimation(flyer.getView(), 10000, waitT+=1000);
-
-            if (flyer == this.flyer){
-                endFlag = true;
+            if (waitT > 0){
+                flyer = flyer.getNextFlyer();
             }
+
+            if (flyer == this.flyer && waitT > 0){
+                endFlag = true;
+                continue;
+            }
+
+            flyer.setCircleMovement(MoveTrackManager.getInstance(mContext).makeCircleMovementAnim(flyer.getView(), waitT+=1000));
+            flyer.getCircleMovement().startAnimation();
+
         }
 
 

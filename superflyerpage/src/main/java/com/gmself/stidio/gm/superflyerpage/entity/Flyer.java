@@ -2,9 +2,12 @@ package com.gmself.stidio.gm.superflyerpage.entity;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.view.View;
 import android.view.ViewGroup;
 
 import com.gmself.stidio.gm.superflyerpage.ui.customView.FreeItemView;
+import com.gmself.stidio.gm.superflyerpage.ui.listener.FlyerViewOnClickListener;
+import com.gmself.studio.mg.basemodule.animation.animator_roaming.AnimatorPath;
 
 /**
  *
@@ -15,6 +18,8 @@ import com.gmself.stidio.gm.superflyerpage.ui.customView.FreeItemView;
  */
 
 public class Flyer {
+
+    private int id;
 
     private FreeItemView view;
 
@@ -27,6 +32,10 @@ public class Flyer {
 
     private int width = 100;
     private int height = 100;
+
+    private AnimatorPath CircleMovement;
+    private AnimatorPath ReturnCircleMovement;
+    private AnimatorPath ProminentMovement;
 
     private Flyer previousFlyer; //上一个
     private Flyer nextFlyer; //下一个
@@ -52,6 +61,15 @@ public class Flyer {
         this.y = y;
         view.setTranslationX(x);
         view.setTranslationY(y);
+    }
+
+    public void setOnClickListener(final FlyerViewOnClickListener listener){
+        view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                listener.onClick(Flyer.this, v);
+            }
+        });
     }
 
     public double getMoney() {
@@ -110,4 +128,35 @@ public class Flyer {
         this.nextFlyer = nextFlyer;
     }
 
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public AnimatorPath getCircleMovement() {
+        return CircleMovement;
+    }
+
+    public void setCircleMovement(AnimatorPath circleMovement) {
+        CircleMovement = circleMovement;
+    }
+
+    public AnimatorPath getProminentMovement() {
+        return ProminentMovement;
+    }
+
+    public void setProminentMovement(AnimatorPath prominentMovement) {
+        ProminentMovement = prominentMovement;
+    }
+
+    public AnimatorPath getReturnCircleMovement() {
+        return ReturnCircleMovement;
+    }
+
+    public void setReturnCircleMovement(AnimatorPath returnCircleMovement) {
+        ReturnCircleMovement = returnCircleMovement;
+    }
 }

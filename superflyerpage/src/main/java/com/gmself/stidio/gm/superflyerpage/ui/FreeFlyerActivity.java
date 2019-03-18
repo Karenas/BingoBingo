@@ -1,13 +1,18 @@
 package com.gmself.stidio.gm.superflyerpage.ui;
 
+import android.animation.Animator;
 import android.graphics.Color;
+import android.view.View;
 import android.widget.FrameLayout;
 
 import com.alibaba.android.arouter.facade.annotation.Route;
 import com.gmself.stidio.gm.superflyerpage.R;
+import com.gmself.stidio.gm.superflyerpage.constant.MoveTrackManager;
 import com.gmself.stidio.gm.superflyerpage.entity.Flyer;
 import com.gmself.stidio.gm.superflyerpage.ui.customView.FreeItemView;
 import com.gmself.stidio.gm.superflyerpage.ui.customView.FreeRunningQueue;
+import com.gmself.stidio.gm.superflyerpage.ui.listener.FlyerViewOnClickListener;
+import com.gmself.studio.mg.basemodule.animation.animator_roaming.AnimatorPath;
 import com.gmself.studio.mg.basemodule.base.ui.activity.BaseActivity;
 import com.gmself.studio.mg.basemodule.log_tool.Logger;
 
@@ -19,6 +24,8 @@ public class FreeFlyerActivity extends BaseActivity{
 
     private Flyer flyer;
 
+    private FreeRunningQueue queue;
+
     @Override
     protected int setLayoutID() {
         return R.layout.activity_freeflyer_home;
@@ -28,7 +35,7 @@ public class FreeFlyerActivity extends BaseActivity{
     public void initView() {
         FrameLayout layout = findViewById(R.id.freeflyer_home_content_fl);
 
-        FreeRunningQueue queue = new FreeRunningQueue(this, 9, layout);
+        queue = new FreeRunningQueue(this, 1, layout, flyerViewOnClickListener);
         flyer = queue.getFlyer();
 
         queue.run();
@@ -47,6 +54,39 @@ public class FreeFlyerActivity extends BaseActivity{
 //            flyer = flyer.getNextFlyer();
 //        }
     }
+
+    FlyerViewOnClickListener flyerViewOnClickListener = new FlyerViewOnClickListener() {
+        @Override
+        public void onClick(final Flyer flyer, final View v) {
+            if (flyer.getCircleMovement().getAnimator().isRunning()){
+//                flyer.getCircleMovement().getAnimator().pause();
+                flyer.getCircleMovement().closeAnimator();
+                flyer.setProminentMovement(MoveTrackManager.getInstance(FreeFlyerActivity.this).makeProminentMovementAnim(v, 0));
+                flyer.getProminentMovement().startAnimation();
+            }else {
+                //                flyer.getCircleMovement().getAnimator().setStartDelay(1000);
+//                flyer.getCircleMovement().getAnimator().setCurrentPlayTime(flyer.getPreviousFlyer().getCircleMovement().getAnimator().getCurrentPlayTime()-1000);
+                flyer.getCircleMovement().getAnimator().setStartDelay(0);
+                flyer.getCircleMovement().startAnimation();
+
+
+//                flyer.getCircleMovement().startAnimation();
+//                flyer.setReturnCircleMovement(
+//                        MoveTrackManager.getInstance(FreeFlyerActivity.this)
+//                                .makeReturnCircleMovementAnim(
+//                                        flyer.getPreviousFlyer().getView().getX(),
+//                                        flyer.getPreviousFlyer().getView().getY(),
+//                                        flyer.getPreviousFlyer().getCircleMovement().getAnimator().getCurrentPlayTime(),
+//                                        v,
+//                                        1000
+//                                        ));
+//                flyer.getReturnCircleMovement().startAnimation();
+            }
+
+
+
+        }
+    };
 
     @Override
     protected void onDestroy() {
