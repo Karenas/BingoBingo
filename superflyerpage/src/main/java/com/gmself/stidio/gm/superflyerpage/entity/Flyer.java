@@ -37,6 +37,9 @@ public class Flyer {
     private AnimatorPath ReturnCircleMovement;
     private AnimatorPath ProminentMovement;
 
+    private boolean isFirst = false;
+    private boolean isLast = false;
+
     private Flyer previousFlyer; //上一个
     private Flyer nextFlyer; //下一个
 
@@ -158,5 +161,21 @@ public class Flyer {
 
     public void setReturnCircleMovement(AnimatorPath returnCircleMovement) {
         ReturnCircleMovement = returnCircleMovement;
+    }
+
+    public boolean isFirst() {
+        return isFirst;
+    }
+
+    public void setFirst(boolean first) {
+        isFirst = first;
+    }
+
+    public boolean isLast() {
+        return isLast;
+    }
+
+    public void setLast(boolean last) {
+        isLast = last;
     }
 }

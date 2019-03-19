@@ -53,25 +53,24 @@ public class MoveTrackManager {
 
     public AnimatorPath makeCircleMovementAnim(View view, int waitTime){
         AnimatorPath animatorPath = new AnimatorPath();
-        animatorPath.moveTo(maxX, maxY*2/3);
+        animatorPath.moveTo(maxX+200, maxY*2/3);
         animatorPath.cubicTo(maxX+200, maxY*2/3, (maxX/2), maxY*2/3+300, 0-200, maxY*2/3);
         animatorPath.createAnimation(view, 10000, waitTime, ValueAnimator.INFINITE);
         return animatorPath;
     }
 
-    public AnimatorPath makeReturnCircleMovementAnim(float x, float y, long playTime, View view, int waitTime){
-        AnimatorPath animatorPath = new AnimatorPath();
-        animatorPath.moveTo(maxX, maxY*2/3);
-        animatorPath.cubicTo(maxX+200, maxY*2/3, (maxX/2), maxY*2/3+300, 0-200, maxY*2/3);
-        animatorPath.createAnimation(view, 10000, waitTime, ValueAnimator.INFINITE);
-        animatorPath.getAnimator().setCurrentPlayTime(playTime);
-        return animatorPath;
-    }
+//    public AnimatorPath makeReturnCircleMovementAnim(View view, int waitTime){
+//        AnimatorPath animatorPath = new AnimatorPath();
+//        animatorPath.lineTo(maxX+200, maxY*2/3);
+//        animatorPath.cubicTo(maxX+200, maxY*2/3, (maxX/2), maxY*2/3+300, 0-200, maxY*2/3);
+//        animatorPath.createAnimation(view, 10000, waitTime, ValueAnimator.INFINITE);
+//        return animatorPath;
+//    }
 
     public AnimatorPath makeProminentMovementAnim(final View view, int waitTime){
         AnimatorPath animatorPath = new AnimatorPath();
         animatorPath.moveTo(view.getX(), view.getY());
-        animatorPath.lineTo(maxX/2, maxY/4);
+        animatorPath.lineTo(maxX/2 - (view.getWidth()/2), maxY/4);
         animatorPath.createAnimation(view, 1500, waitTime, 0);
         animatorPath.getAnimator().addListener(new Animator.AnimatorListener() {
             @Override
@@ -81,7 +80,7 @@ public class MoveTrackManager {
 
             @Override
             public void onAnimationEnd(Animator animation) {
-                view.setTranslationX(maxX/2);
+                view.setTranslationX(maxX/2 - (view.getWidth()/2));
                 view.setTranslationY(maxY/4);
             }
 

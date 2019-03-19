@@ -49,6 +49,7 @@ public class FreeRunningQueue {
         for (int i = 0; i < max;i++){
             if (flyer == null){
                 flyer = new Flyer();
+                flyer.setFirst(true);
                 firstFlyer = flyer;
             }
 
@@ -71,6 +72,7 @@ public class FreeRunningQueue {
                 flyer = flyer.getNextFlyer();
             }else {
                 flyer.setNextFlyer(firstFlyer);
+                flyer.setLast(true);
                 firstFlyer.setPreviousFlyer(flyer);
             }
         }
