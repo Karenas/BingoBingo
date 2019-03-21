@@ -2,7 +2,8 @@
     package="com.gmself.stidio.gm.superflyerpage" >
 
     <application >
-        <activity android:name=".ui.FreeFlyerActivity"/>
+        <activity android:name=".ui.FreeFlyerActivity"
+            android:screenOrientation="portrait"/>
 
     </application>
 

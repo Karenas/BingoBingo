@@ -1,12 +1,20 @@
 package com.gmself.stidio.gm.superflyerpage.ui.customView;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.ImageFormat;
+import android.graphics.Paint;
+import android.graphics.RectF;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.LinearLayout;
+
+import com.gmself.stidio.gm.superflyerpage.R;
 
 /**
  * Created by guomeng on 3/7.
@@ -14,11 +22,15 @@ import android.widget.LinearLayout;
 
 public class FreeItemView extends View {
 
+    private boolean inInit = false;
+
     private int width;
     private int height;
 
-//    private float x;
-//    private float y;
+    private RectF rectF;
+
+    private int imageResID = -1;
+
 
     public FreeItemView(Context context) {
         super(context);
@@ -36,27 +48,60 @@ public class FreeItemView extends View {
         super(context);
         this.width = width;
         this.height = height;
+        inInit = true;
     }
-//
-//    public void setXY(float x, float y){
-//        this.x = x;
-//        this.y = y;
-//
-//        setTranslationX(x);
-//        setTranslationY(y);
-//    }
+
+    public void loadImageResID(int imageResID) {
+        this.imageResID = imageResID;
+        Canvas canvas = new Canvas();
+        draw(canvas);
+    }
 
     @Override
     protected void onDraw(Canvas canvas) {
-        super.onDraw(canvas);
+
+        if (imageResID != -1){
+            Bitmap image = BitmapFactory.decodeResource(getResources(), imageResID);
+
+//            if (rectF == null){
+            rectF = new RectF(0, 0, width, height);   //w和h分别是屏幕的宽和高，也就是你想让图片显示的宽和高
+//            }
+
+            Paint mPaint = new Paint();
+//            canvas.drawBitmap(image, 0, 0, mPaint);
+            canvas.drawBitmap(image, null, rectF, mPaint);
+        }
+
     }
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        int width_ = getDefaultSize(width);
-        int height_ = getDefaultSize(height);
-        //设置宽高
-        setMeasuredDimension(width_, height_);
+//        if (inInit){
+            int width_ = getDefaultSize(width);
+            int height_ = getDefaultSize(height);
+            //设置宽高
+            setMeasuredDimension(width_, height_);
+//            inInit = false;
+//        }else {
+////            width = getDefaultSize(widthMeasureSpec);
+////            height = getDefaultSize(heightMeasureSpec);
+//
+//            super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+//        }
+
+
+    }
+
+    @Override
+    public void setLayoutParams(ViewGroup.LayoutParams params) {
+        super.setLayoutParams(params);
+        if (params.width > 0){
+            width = params.width;
+        }
+
+        if (params.height > 0){
+            height = params.height;
+        }
     }
 
     private int getDefaultSize(int measureSpec) {

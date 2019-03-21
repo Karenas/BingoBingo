@@ -8,7 +8,7 @@ import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.WindowManager;
 
-import com.gmself.studio.mg.basemodule.animation.animator_roaming.AnimatorPath;
+import com.gmself.studio.mg.basemodule.animation.animator_roaming.AnimatorCarrier;
 
 /**
  * Created by guomeng on 2019/3/18.
@@ -51,8 +51,16 @@ public class MoveTrackManager {
     }
 
 
-    public AnimatorPath makeCircleMovementAnim(View view, int waitTime){
-        AnimatorPath animatorPath = new AnimatorPath();
+//    public AnimatorPath makeCircleMovementAnim(View view, int waitTime){
+//        AnimatorPath animatorPath = new AnimatorPath();
+//        animatorPath.moveTo(maxX+200, maxY*2/3);
+//        animatorPath.cubicTo(maxX+200, maxY*2/3, (maxX/2), maxY*2/3+300, 0-200, maxY*2/3);
+//        animatorPath.createAnimation(view, 10000, waitTime, ValueAnimator.INFINITE);
+//        return animatorPath;
+//    }
+
+    public AnimatorCarrier makeCircleMovementAnim(View view, int waitTime){
+        AnimatorCarrier animatorPath = new AnimatorCarrier();
         animatorPath.moveTo(maxX+200, maxY*2/3);
         animatorPath.cubicTo(maxX+200, maxY*2/3, (maxX/2), maxY*2/3+300, 0-200, maxY*2/3);
         animatorPath.createAnimation(view, 10000, waitTime, ValueAnimator.INFINITE);
@@ -67,11 +75,48 @@ public class MoveTrackManager {
 //        return animatorPath;
 //    }
 
-    public AnimatorPath makeProminentMovementAnim(final View view, int waitTime){
-        AnimatorPath animatorPath = new AnimatorPath();
+//    public AnimatorPath makeProminentMovementAnim(final View view, int waitTime){
+//        AnimatorPath animatorPath = new AnimatorPath();
+//        animatorPath.moveTo(view.getX(), view.getY());
+////        animatorPath.lineTo(maxX/2 - (view.getWidth()/2), maxY/4);
+//        animatorPath.cubicTo(view.getX(), view.getY(), view.getX()-300, view.getY()-50,maxX/2 - (view.getWidth()/2), maxY/4);
+//        animatorPath.createAnimation(view, 1500, waitTime, 0);
+//        animatorPath.getAnimator().setCurrentPlayTime(200);
+//        animatorPath.getAnimator().addListener(new Animator.AnimatorListener() {
+//            @Override
+//            public void onAnimationStart(Animator animation) {
+//
+//            }
+//
+//            @Override
+//            public void onAnimationEnd(Animator animation) {
+//                view.setTranslationX(maxX/2 - (view.getWidth()/2));
+//                view.setTranslationY(maxY/4);
+//            }
+//
+//            @Override
+//            public void onAnimationCancel(Animator animation) {
+//
+//            }
+//
+//            @Override
+//            public void onAnimationRepeat(Animator animation) {
+//
+//            }
+//        });
+//        return animatorPath;
+//    }
+
+    public AnimatorCarrier makeProminentMovementAnim(final View view, int waitTime){
+        AnimatorCarrier animatorPath = new AnimatorCarrier();
         animatorPath.moveTo(view.getX(), view.getY());
-        animatorPath.lineTo(maxX/2 - (view.getWidth()/2), maxY/4);
+//        animatorPath.lineTo(maxX/2 - (view.getWidth()/2), maxY/4);
+        animatorPath.cubicTo(view.getX(), view.getY(), view.getX()-300, view.getY()-50,maxX/2 - ((view.getWidth()+250)/2), maxY/4);
+//        animatorPath.withLinearSize(view.getWidth(), view.getHeight(), view.getWidth()+200, view.getHeight()+200);
+        animatorPath.withPeakSize(view.getWidth(), view.getHeight(), view.getWidth()+50, view.getHeight()+50, view.getWidth()+250, view.getHeight()+250, 0.6f);
+
         animatorPath.createAnimation(view, 1500, waitTime, 0);
+        animatorPath.getAnimator().setCurrentPlayTime(200);
         animatorPath.getAnimator().addListener(new Animator.AnimatorListener() {
             @Override
             public void onAnimationStart(Animator animation) {

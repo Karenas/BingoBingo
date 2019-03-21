@@ -1,20 +1,17 @@
 package com.gmself.stidio.gm.superflyerpage.ui;
 
-import android.animation.Animator;
-import android.graphics.Color;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.Toast;
 
 import com.alibaba.android.arouter.facade.annotation.Route;
 import com.gmself.stidio.gm.superflyerpage.R;
 import com.gmself.stidio.gm.superflyerpage.constant.MoveTrackManager;
 import com.gmself.stidio.gm.superflyerpage.entity.Flyer;
-import com.gmself.stidio.gm.superflyerpage.ui.customView.FreeItemView;
 import com.gmself.stidio.gm.superflyerpage.ui.customView.FreeRunningQueue;
 import com.gmself.stidio.gm.superflyerpage.ui.listener.FlyerViewOnClickListener;
-import com.gmself.studio.mg.basemodule.animation.animator_roaming.AnimatorPath;
 import com.gmself.studio.mg.basemodule.base.ui.activity.BaseActivity;
-import com.gmself.studio.mg.basemodule.log_tool.Logger;
 
 /**
  * Created by guomeng on 3/7.
@@ -22,9 +19,14 @@ import com.gmself.studio.mg.basemodule.log_tool.Logger;
 @Route(path = "/freeFlyer/FreeFlyerActivity")
 public class FreeFlyerActivity extends BaseActivity{
 
+    private final int[] imageIDs = {R.drawable.angry, R.drawable.anguished, R.drawable.astonished, R.drawable.blush,
+            R.drawable.confounded, R.drawable.expressionless,
+            R.drawable.fearful, R.drawable.grinning, R.drawable.joy, R.drawable.kissing_heart};
+
     private Flyer focusFlyer;
 
     private FreeRunningQueue queue;
+
 
     @Override
     protected int setLayoutID() {
@@ -36,7 +38,7 @@ public class FreeFlyerActivity extends BaseActivity{
         FrameLayout layout = findViewById(R.id.freeflyer_home_content_fl);
 
         queue = new FreeRunningQueue(this, 10, layout, flyerViewOnClickListener);
-
+        autoCreateFlyerQueue(10, layout, flyerViewOnClickListener);
         queue.run();
     }
 
@@ -64,6 +66,8 @@ public class FreeFlyerActivity extends BaseActivity{
                 flyer.getCircleMovement().closeAnimator(); //曲线轨道运动关闭
                 flyer.setProminentMovement(MoveTrackManager.getInstance(FreeFlyerActivity.this).makeProminentMovementAnim(v, 0)); //设置焦点轨道
                 flyer.getProminentMovement().startAnimation(); //焦点轨道运动启动
+            }else {
+                Toast.makeText(FreeFlyerActivity.this, "w = "+v.getWidth(), Toast.LENGTH_LONG).show();
             }
         }
     };
@@ -86,6 +90,7 @@ public class FreeFlyerActivity extends BaseActivity{
             return;
         }
 
+        flyer.reSize();
         flyer.getCircleMovement().getAnimator().setStartDelay(0); //重置运动的起始延迟时间
         flyer.getCircleMovement().startAnimation(); //曲线轨道运动启动
 
@@ -114,7 +119,33 @@ public class FreeFlyerActivity extends BaseActivity{
 
     @Override
     protected void onDestroy() {
+        queue.close();
         super.onDestroy();
+    }
+
+
+    private void autoCreateFlyerQueue(int max, ViewGroup viewGroup, FlyerViewOnClickListener onClickListener){
+        Flyer flyer = null;
+
+        if (imageIDs.length<max){
+            max = imageIDs.length;
+        }
+
+        for (int i = 0; i < max;i++){
+            flyer = new Flyer();
+
+            flyer.setId(i);
+            flyer.setImageResID(imageIDs[i]);
+            flyer.initView(this);
+            flyer.addToGroup(viewGroup);
+            flyer.setVisibility(View.INVISIBLE);
+            flyer.setOnClickListener(onClickListener);
+
+            flyer.setInfo("信息："+i);
+
+            queue.addFlyer(flyer);
+        }
+
     }
 
 

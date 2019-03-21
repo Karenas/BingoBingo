@@ -1,13 +1,12 @@
 package com.gmself.stidio.gm.superflyerpage.entity;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.gmself.stidio.gm.superflyerpage.ui.customView.FreeItemView;
 import com.gmself.stidio.gm.superflyerpage.ui.listener.FlyerViewOnClickListener;
-import com.gmself.studio.mg.basemodule.animation.animator_roaming.AnimatorPath;
+import com.gmself.studio.mg.basemodule.animation.animator_roaming.AnimatorCarrier;
 
 /**
  *
@@ -33,9 +32,8 @@ public class Flyer {
     private int width = 100;
     private int height = 100;
 
-    private AnimatorPath CircleMovement;
-    private AnimatorPath ReturnCircleMovement;
-    private AnimatorPath ProminentMovement;
+    private AnimatorCarrier CircleMovement;
+    private AnimatorCarrier ProminentMovement;
 
     private boolean isFirst = false;
     private boolean isLast = false;
@@ -51,8 +49,7 @@ public class Flyer {
 
     public void initView(Context mContext) {
         view = new FreeItemView(mContext, width, height);
-//        view.setXY(x, y);
-        view.setBackgroundColor(Color.BLACK);
+        view.loadImageResID(imageResID);
     }
 
     public FreeItemView getView() {
@@ -64,6 +61,18 @@ public class Flyer {
         this.y = y;
         view.setTranslationX(x);
         view.setTranslationY(y);
+    }
+
+    public void reSize(){
+        ViewGroup.LayoutParams layoutParams = view.getLayoutParams();
+        layoutParams.width = width;
+        layoutParams.height = height;
+        view.setLayoutParams(layoutParams);
+    }
+
+
+    public void setVisibility(int visibility){
+        view.setVisibility(visibility);
     }
 
     public void setOnClickListener(final FlyerViewOnClickListener listener){
@@ -139,28 +148,20 @@ public class Flyer {
         this.id = id;
     }
 
-    public AnimatorPath getCircleMovement() {
+    public AnimatorCarrier getCircleMovement() {
         return CircleMovement;
     }
 
-    public void setCircleMovement(AnimatorPath circleMovement) {
+    public void setCircleMovement(AnimatorCarrier circleMovement) {
         CircleMovement = circleMovement;
     }
 
-    public AnimatorPath getProminentMovement() {
+    public AnimatorCarrier getProminentMovement() {
         return ProminentMovement;
     }
 
-    public void setProminentMovement(AnimatorPath prominentMovement) {
+    public void setProminentMovement(AnimatorCarrier prominentMovement) {
         ProminentMovement = prominentMovement;
-    }
-
-    public AnimatorPath getReturnCircleMovement() {
-        return ReturnCircleMovement;
-    }
-
-    public void setReturnCircleMovement(AnimatorPath returnCircleMovement) {
-        ReturnCircleMovement = returnCircleMovement;
     }
 
     public boolean isFirst() {
