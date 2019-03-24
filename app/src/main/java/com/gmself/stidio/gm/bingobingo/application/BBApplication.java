@@ -5,7 +5,9 @@ import android.os.Environment;
 import android.text.TextUtils;
 
 import com.alibaba.android.arouter.launcher.ARouter;
+import com.gmself.studio.mg.basemodule.BaseConfig;
 import com.gmself.studio.mg.basemodule.log_tool.Logger;
+import com.gmself.studio.mg.basemodule.net_work.http_core.OkHttpManger;
 
 /**
  * Created by guomeng on 2/28.
@@ -18,6 +20,10 @@ public class BBApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+
+        BaseConfig.getInstance().setRunDebug(true);
+
+        OkHttpManger.getInstance().initHttp(this);
 
         initARouter();
         initLogger();
