@@ -1,0 +1,12 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.gmself.studio.mg.fontconversion" >
+
+    <application>
+
+        <activity android:name=".ui.FontConversionHomeActivity"
+            android:launchMode="singleTask">
+
+        </activity>
+    </application>
+
+</manifest>

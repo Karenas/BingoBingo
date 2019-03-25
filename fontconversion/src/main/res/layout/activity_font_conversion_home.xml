@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/fontConversion_home_tv"
+        android:layout_width="match_parent"
+        android:layout_height="200dip" />
+
+    <EditText
+        android:id="@+id/fontConversion_home_et"
+        android:layout_width="match_parent"
+        android:layout_height="100dip" />
+
+    <TextView
+        android:id="@+id/fontConversion_home_btn_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingLeft="30dip"
+        android:paddingRight="30dip"
+        android:paddingTop="10dip"
+        android:paddingBottom="10dip"
+        android:text=" 点击转变字体 "
+        />
+
+</LinearLayout>

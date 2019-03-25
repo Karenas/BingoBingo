@@ -21,33 +21,33 @@ public class Port_test extends BaseDoPort {
     /**
      * @param
      * */
-    public boolean doPort(Context context, String phoneNumber, OkHttpListener listener){
+    public boolean doPort(Context context, String name, String phoneNumber, OkHttpListener listener){
         super.doPort(context);
         boolean r = true;
 
-        PostUpJsonBean postMsg = getPostMsg(phoneNumber);
+        PostUpJsonBean postMsg = getPostMsg(name, phoneNumber);
 
         OkHttpManger.getInstance().doPostJson(context, postMsg, listener);
         return r;
     }
 
-    public boolean doPortInCurrentThread(Context context, String phoneNumber, OkHttpListener listener){
+    public boolean doPortInCurrentThread(Context context, String name, String phoneNumber, OkHttpListener listener){
         super.doPort(context);
-
         boolean r = true;
 
-        PostUpJsonBean postMsg = getPostMsg(phoneNumber);
+        PostUpJsonBean postMsg = getPostMsg(name, phoneNumber);
 
         OkHttpManger.getInstance().doPostJsonInCurrentThread(context, postMsg, listener);
         return r;
     }
 
-    private PostUpJsonBean getPostMsg(String phoneNumber){
+    private PostUpJsonBean getPostMsg(String name, String phoneNumber){
         String url =  PortUrl.getUrl(HttpPortType.TEST);
         PostUpJsonBean postMsg = new PostUpJsonBean(url);
         try {
-            postMsg.setGlobalParam(true);
-            postMsg.addMsg(HttpPortUpMessageType.TEST, phoneNumber);
+            postMsg.setGlobalParam(false);
+            postMsg.addMsg(HttpPortUpMessageType.NAME, name);
+            postMsg.addMsg(HttpPortUpMessageType.PHONE_NUMBER, phoneNumber);
         } catch (JSONException e) {
             e.printStackTrace();
         }

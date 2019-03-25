@@ -43,7 +43,7 @@ public class BingoHomeActivity extends BaseActivity{
 
     private List<EntityHomeRvItem> mailList;
 
-    private static final String[] functionList = {"图片文字识别", "动效展示", "待开放", "待开放", "待开放", "待开放", "待开放", "待开放", "待开放"};
+    private static final String[] functionList = {"图片文字识别", "动效展示", "字体切换", "待开放", "待开放", "待开放", "待开放", "待开放", "待开放"};
 
     @Override
     protected int setLayoutID() {
@@ -104,6 +104,9 @@ public class BingoHomeActivity extends BaseActivity{
                         break;
                     case 1:
                         Manager_RouterM.getInstance().router_goto(ENUM_RouterE.ACTIVITY_FREE_FLYER_HOME);
+                        break;
+                    case 2:
+                        Manager_RouterM.getInstance().router_goto(ENUM_RouterE.ACTIVITY_FONT_CONVERSION_HOME);
                         break;
                 }
 

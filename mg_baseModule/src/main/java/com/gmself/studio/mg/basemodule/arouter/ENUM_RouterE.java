@@ -11,6 +11,9 @@ public enum ENUM_RouterE {
     ACTIVITY_OCR_MAIN("/ocr/ocr_MainActivity"),
 
     ACTIVITY_FREE_FLYER_HOME("/freeFlyer/FreeFlyerActivity"),
+
+    ACTIVITY_FONT_CONVERSION_HOME("/fontConversion/HomeActivity"),
+
     ;
 
     private String path;

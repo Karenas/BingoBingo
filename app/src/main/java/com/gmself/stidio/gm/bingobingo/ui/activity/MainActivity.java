@@ -25,7 +25,7 @@ public class MainActivity extends AppCompatActivity {
         SystemClock.sleep(1000);
 
         Port_test portTest = new Port_test();
-        portTest.doPort(this, "11122233", new OkHttpListener() {
+        portTest.doPort(this, "bingobingo", "132000000000", new OkHttpListener() {
             @Override
             public void onSuccess(String jsonStr) {
 
@@ -42,7 +42,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-//        Manager_RouterM.getInstance().router_goto(ENUM_RouterE.ACTIVITY_OVERALL_HOME);
+        Manager_RouterM.getInstance().router_goto(ENUM_RouterE.ACTIVITY_OVERALL_HOME);
 
 
 

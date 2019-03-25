@@ -9,7 +9,9 @@ package com.gmself.studio.mg.basemodule.net_work.constant;
 
 public enum HttpPortUpMessageType {
 
-    TEST("test"),
+    PHONE_NUMBER("phoneNumber"),
+
+    NAME("name"),
 
     ;
 
