@@ -25,7 +25,7 @@ public class MainActivity extends AppCompatActivity {
         SystemClock.sleep(1000);
 
         Port_test portTest = new Port_test();
-        portTest.doPort(this, "bingobingo", "132000000000", new OkHttpListener() {
+        portTest.doPort(this, "bingobingo", "12345678901", new OkHttpListener() {
             @Override
             public void onSuccess(String jsonStr) {
 
