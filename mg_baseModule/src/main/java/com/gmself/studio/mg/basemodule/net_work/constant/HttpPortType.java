@@ -14,6 +14,10 @@ public enum HttpPortType {
     UPLOAD_FILE,
 
     TEST,
+
+    REQ_HF_WEATHER_NOW,
+
+
     ;
 
 }

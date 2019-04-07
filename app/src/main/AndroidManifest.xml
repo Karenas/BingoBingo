@@ -10,6 +10,8 @@
     <!-- 外部存储读权限，调试工具加载本地补丁需要 -->
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
 
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+
 
     <application
         android:name=".application.SophixStubApplication"
@@ -27,6 +29,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <service android:name="com.gmself.studio.mg.basemodule.service.moduleService.LocationService" />
+
     </application>
 
 </manifest>

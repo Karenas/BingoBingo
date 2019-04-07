@@ -6,6 +6,7 @@ import android.util.Log;
 import com.gmself.studio.mg.basemodule.log_tool.Logger;
 import com.gmself.studio.mg.basemodule.net_work.HttpConfig;
 import com.gmself.studio.mg.basemodule.net_work.constant.HttpPortType;
+import com.gmself.studio.mg.basemodule.net_work.constant.HttpPortUpMessageType;
 import com.gmself.studio.mg.basemodule.net_work.constant.PortUrl;
 import com.gmself.studio.mg.basemodule.net_work.exception.BingoNetWorkException;
 import com.gmself.studio.mg.basemodule.net_work.exception.BingoNetWorkExceptionType;
@@ -21,6 +22,7 @@ import java.security.cert.Certificate;
 import java.security.cert.CertificateFactory;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import javax.net.ssl.HostnameVerifier;
@@ -36,6 +38,7 @@ import javax.net.ssl.X509TrustManager;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Headers;
+import okhttp3.HttpUrl;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
@@ -99,7 +102,7 @@ public class OkHttpInitiator {
             try{
                 mOkHttpClient = createHttpClient();
             }catch (IllegalArgumentException e){
-                // 初始化是吧，网络请求无法使用
+                // 初始化失败，网络请求无法使用
             }
         }
     }
@@ -219,6 +222,71 @@ public class OkHttpInitiator {
     }
 
     //---------------------------------------------------------------------------------
+
+    public void getAsynHttp(final Context ctx, String url, Map<HttpPortUpMessageType, String> parameters, final OkHttpListener listener){
+        getObservableGetHttp(url, parameters).subscribeOn(Schedulers.io()).observeOn(Schedulers.immediate()).subscribe(new Subscriber<String>() {
+            @Override
+            public void onCompleted() {
+                listener.onFinally();
+            }
+            @Override
+            public void onError(Throwable e) {
+                PublicInterceptionNoHttp200(ctx, (BingoNetWorkException) e, listener);
+            }
+            @Override
+            public void onNext(String s) {
+                PublicInterceptionHttp200(s, listener);
+            }
+        });
+    }
+
+    private Observable<String> getObservableGetHttp(final String url, final Map<HttpPortUpMessageType, String> parameters) {
+
+        Observable observable = Observable.create(new Observable.OnSubscribe<String>() {
+            @Override
+            public void call(final Subscriber<? super String> subscriber) {
+                if (null == mOkHttpClient){
+                    Logger.logException(new Exception("OkHttpClient not create! please check it in OKHttpManger.initHttp() "), "port url= "+url);
+                    subscriber.onError(new BingoNetWorkException(BingoNetWorkExceptionType.INIT_ERROR, "OkHttpClient not create! please check it in OKHttpManger.initHttp() "));
+                    subscriber.onCompleted();
+                    return;
+                }
+
+                HttpUrl.Builder urlBuilder = HttpUrl.parse(url)
+                        .newBuilder();
+
+                if (null!=parameters){
+                    for (HttpPortUpMessageType key: parameters.keySet()) {
+                        urlBuilder.addQueryParameter(key.getParamName(), parameters.get(key));
+                    }
+                }
+
+                Request request = new Request.Builder()
+                        .url(urlBuilder.build())
+                        .build();
+                Call call = mOkHttpClient.newCall(request);
+                call.enqueue(new Callback() {
+                    @Override
+                    public void onFailure(Call call, IOException e) {
+                        Logger.logException(e, "port_down url= "+url);
+                        subscriber.onError(new BingoNetWorkException(BingoNetWorkExceptionType.IO_ERROR, "port_down url= "+url));
+                        subscriber.onCompleted();
+                    }
+
+                    @Override
+                    public void onResponse(Call call, Response response) throws IOException {
+                        String str = response.body().string();
+                        Logger.log(Logger.Type.NET_PORT, new String[]{"port_down url= "+url, "port_down msg= "+str});
+
+                        subscriber.onNext(str);
+                        subscriber.onCompleted();
+                    }
+                });
+            }
+        });
+        return observable;
+
+    }
 
 
     public void postAsynHttp(final Context ctx, String url, String arg, final OkHttpListener listener) {

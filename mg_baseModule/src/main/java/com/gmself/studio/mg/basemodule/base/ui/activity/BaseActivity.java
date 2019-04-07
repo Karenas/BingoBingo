@@ -43,7 +43,10 @@ public abstract class BaseActivity extends MPermissionsActivity implements Activ
      * 初始化
      */
     protected void onCreateCustom() {
-        setContentView(setLayoutID());
+        if (setLayoutID()>0){
+            setContentView(setLayoutID());
+        }
+
 
         initView();//初始化控件
         setListener();//设置监听

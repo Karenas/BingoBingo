@@ -8,12 +8,14 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Toast;
 
 import com.alibaba.android.arouter.facade.annotation.Route;
 import com.gmself.studio.mg.basemodule.arouter.ENUM_RouterE;
 import com.gmself.studio.mg.basemodule.arouter.Manager_RouterM;
 import com.gmself.studio.mg.basemodule.base.ui.activity.BaseActivity;
 import com.gmself.studio.mg.basemodule.base.ui.recyclerview.DividerGridItemDecoration;
+import com.gmself.studio.mg.basemodule.customViews.CV_ProgressTextVertical;
 import com.gmself.studio.mg.basemodule.mg_dataProcess.MGThreadTool;
 import com.gmself.studio.mg.basemodule.mg_dataProcess.MGThreadTool_processing;
 import com.gmself.studio.mg.bingobingo.overall.R;
@@ -54,7 +56,6 @@ public class BingoHomeActivity extends BaseActivity{
     public void initView() {
 
         mRecyclerView = findViewById(R.id.overall_home_rv);
-
 
         initMainList();
         adapter = new AdapterOverall_Home_rv(this, mailList);

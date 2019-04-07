@@ -13,6 +13,12 @@ public enum HttpPortUpMessageType {
 
     NAME("name"),
 
+    LOCATION_HF_WEATHER("location"),
+
+    KEY_HF_WEATHER("key"),
+
+    CITY_ID_HF_WEATHER("cityId"),
+
     ;
 
     String paramName ;

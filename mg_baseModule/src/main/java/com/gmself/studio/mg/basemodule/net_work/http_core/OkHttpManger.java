@@ -5,11 +5,13 @@ import android.content.Context;
 
 import com.gmself.studio.mg.basemodule.log_tool.Logger;
 import com.gmself.studio.mg.basemodule.net_work.constant.HttpPortType;
+import com.gmself.studio.mg.basemodule.net_work.constant.HttpPortUpMessageType;
 import com.gmself.studio.mg.basemodule.net_work.constant.PortUrl;
 import com.gmself.studio.mg.basemodule.net_work.http_core.listener.OkHttpListener;
 import com.gmself.studio.mg.basemodule.net_work.http_message.PostUpJsonBean;
 
 import java.io.File;
+import java.util.Map;
 
 
 /**
@@ -79,6 +81,12 @@ public class OkHttpManger {
     private OkHttpInitiator httpInitiator = null;
     public void initHttp(Context mContext){
         httpInitiator = new OkHttpInitiator(mContext);
+    }
+
+    public void doGet(Context ctx, String url, Map<HttpPortUpMessageType, String> parameters, OkHttpListener listener){
+        Logger.log(Logger.Type.NET_PORT, new String[]{"port_up _get_ url= "+url});
+
+        httpInitiator.getAsynHttp(ctx, url, parameters, listener);
     }
 
     public void doPostJson(Context ctx, PostUpJsonBean jsonBean, OkHttpListener listener){

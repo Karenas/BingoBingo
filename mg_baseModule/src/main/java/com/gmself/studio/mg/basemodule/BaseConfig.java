@@ -1,5 +1,9 @@
 package com.gmself.studio.mg.basemodule;
 
+import android.content.Context;
+
+import com.gmself.studio.mg.basemodule.environment.DeviceInfo;
+
 /**
  * Created by guomeng on 3/24.
  */
@@ -20,4 +24,13 @@ public class BaseConfig {
     public void setRunDebug(boolean runDebug) {
         isRunDebug = runDebug;
     }
+
+    public void initData(Context context){
+        initDeviceInfo(context);
+    }
+
+    private void initDeviceInfo(Context context){
+        DeviceInfo.getInstance().init(context);
+    }
+
 }
