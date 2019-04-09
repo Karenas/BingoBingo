@@ -31,6 +31,10 @@ public class LocationService extends IntentService {
 
     private boolean doGetLocationInfoPort = true;
 
+    private boolean doPunch = true;
+
+    private int interval = 1000;
+
     public LocationService() {
         super("LocationService");
     }
@@ -66,7 +70,7 @@ public class LocationService extends IntentService {
         });
 
         while (true){
-            SystemClock.sleep(5000);
+            SystemClock.sleep(interval);
              Location location = locationOnChange[0];
             if (!doGetLocationInfoPort && null != location){
                 doGetLocationInfoPort = true;
@@ -111,6 +115,12 @@ public class LocationService extends IntentService {
                 Get_HFLocation location = JSON.parseObject(jsonStr, Get_HFLocation.class);
                 if (location.getHeWeather6().get(0).getStatus().equals("ok")){
                     LocationBasic basic = location.getHeWeather6().get(0).getBasic().get(0);
+
+                    if (doPunch){
+                        ServiceCallBackManager.getInstance().callback(ServiceCallBackType.PUNCH, basic);
+                        interval = 6000;
+                        doPunch = false;
+                    }
 
                     //回调请求并处理天气信息
                     ServiceCallBackManager.getInstance().callback(ServiceCallBackType.WEATHER, basic);

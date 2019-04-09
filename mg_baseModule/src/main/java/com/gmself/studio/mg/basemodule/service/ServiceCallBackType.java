@@ -6,6 +6,7 @@ package com.gmself.studio.mg.basemodule.service;
 
 public enum ServiceCallBackType {
 
+    PUNCH,
     LOCATION,
     WEATHER,
 

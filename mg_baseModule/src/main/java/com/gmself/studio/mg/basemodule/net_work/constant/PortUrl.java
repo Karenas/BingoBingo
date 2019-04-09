@@ -12,9 +12,9 @@ public class PortUrl {
 
 //    private static final String port_81 = "81";
 //
-//    private static final String debugPortIp = "http://192.168.50.30:59000";
+    private static final String debugPortIp = "http://192.168.50.30:59000";
 //    private static final String debugPortIp = "http://192.168.1.240:59000";
-    private static final String debugPortIp = "http://192.168.137.1:59000";
+//    private static final String debugPortIp = "http://192.168.137.1:59000";
 //    private static final String debugPortIp = "http://47.94.200.244:81";
 //    private static final String debugPortIp = "http://101.254.117.74:59002";
 //        private static final String debugPortIp = "http://192.168.1.110:52002";

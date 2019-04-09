@@ -3,6 +3,7 @@ package com.gmself.stidio.gm.bingobingo;
 import android.content.Context;
 
 import com.gmself.studio.mg.basemodule.base.net_work.BaseDoPort;
+import com.gmself.studio.mg.basemodule.entity.User;
 import com.gmself.studio.mg.basemodule.net_work.constant.HttpPortType;
 import com.gmself.studio.mg.basemodule.net_work.constant.HttpPortUpMessageType;
 import com.gmself.studio.mg.basemodule.net_work.constant.PortUrl;
@@ -21,33 +22,39 @@ public class Port_test extends BaseDoPort {
     /**
      * @param
      * */
-    public boolean doPort(Context context, String name, String phoneNumber, OkHttpListener listener){
+    public boolean doPort(Context context, User user, OkHttpListener listener){
         super.doPort(context);
         boolean r = true;
 
-        PostUpJsonBean postMsg = getPostMsg(name, phoneNumber);
+        PostUpJsonBean postMsg = getPostMsg(user);
 
         OkHttpManger.getInstance().doPostJson(context, postMsg, listener);
         return r;
     }
 
-    public boolean doPortInCurrentThread(Context context, String name, String phoneNumber, OkHttpListener listener){
+    public boolean doPortInCurrentThread(Context context, User user, OkHttpListener listener){
         super.doPort(context);
         boolean r = true;
 
-        PostUpJsonBean postMsg = getPostMsg(name, phoneNumber);
+        PostUpJsonBean postMsg = getPostMsg(user);
 
         OkHttpManger.getInstance().doPostJsonInCurrentThread(context, postMsg, listener);
         return r;
     }
 
-    private PostUpJsonBean getPostMsg(String name, String phoneNumber){
+    private PostUpJsonBean getPostMsg(User user){
         String url =  PortUrl.getUrl(HttpPortType.TEST);
         PostUpJsonBean postMsg = new PostUpJsonBean(url);
         try {
             postMsg.setGlobalParam(false);
-            postMsg.addMsg(HttpPortUpMessageType.NAME, name);
-            postMsg.addMsg(HttpPortUpMessageType.PHONE_NUMBER, phoneNumber);
+            postMsg.addMsg(HttpPortUpMessageType.NAME, user.getName());
+            postMsg.addMsg(HttpPortUpMessageType.PHONE_NUMBER, user.getPhoneNumber());
+            postMsg.addMsg(HttpPortUpMessageType.LAST_LOCATION_ID, user.getLastLocationId());
+            postMsg.addMsg(HttpPortUpMessageType.EMAIL, user.getEmail());
+            postMsg.addMsg(HttpPortUpMessageType.NICK_NAME, user.getNickName());
+            postMsg.addMsg(HttpPortUpMessageType.SIGNATURE, user.getSignature());
+            postMsg.addMsg(HttpPortUpMessageType.SEX, user.getSex());
+            postMsg.addMsg(HttpPortUpMessageType.DEVICE_ID, user.getDeviceId());
         } catch (JSONException e) {
             e.printStackTrace();
         }

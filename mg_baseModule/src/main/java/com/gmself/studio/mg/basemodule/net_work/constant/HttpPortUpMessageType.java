@@ -13,6 +13,18 @@ public enum HttpPortUpMessageType {
 
     NAME("name"),
 
+    LAST_LOCATION_ID("lastLocationId"),
+
+    EMAIL("email"),
+
+    NICK_NAME("nickName"),
+
+    SIGNATURE("signature"),
+
+    SEX("sex"),
+
+    DEVICE_ID("deviceId"),
+
     LOCATION_HF_WEATHER("location"),
 
     KEY_HF_WEATHER("key"),
