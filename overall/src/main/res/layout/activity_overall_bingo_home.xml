@@ -10,6 +10,11 @@
 
         />
 
+    <com.gmself.studio.mg.basemodule.customViews.CV_smallVideoView
+        android:id="@+id/cv_video"
+        android:layout_width="match_parent"
+        android:layout_height="500px"/>
+
     <com.gmself.studio.mg.bingobingo.overall.ui.customView.RecyclerView_home
         android:id="@+id/overall_home_rv"
         android:layout_width="match_parent"

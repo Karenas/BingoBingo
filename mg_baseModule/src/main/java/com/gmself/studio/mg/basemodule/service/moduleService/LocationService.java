@@ -29,7 +29,6 @@ public class LocationService extends IntentService {
     private static double longitude;//经度
     private static double latitude;//纬度
 
-    private boolean doGetLocationInfoPort = true;
 
     private boolean doPunch = true;
 
@@ -50,60 +49,44 @@ public class LocationService extends IntentService {
 
     @Override
     protected void onHandleIntent(@Nullable Intent intent) {
-        final Location[] locationOnChange = new Location[1];
+        while (true){
+            SystemClock.sleep(interval);
+            getLocation();
+        }
+    }
+
+    private void getLocation(){
         LocationInfo.getInstance(this).getLngAndLat(new LocationInfo.OnLocationResultListener() {
             @Override
             public void onLocationResult(Location location) {
                 if (null!=location){
-                    longitude = location.getLongitude();
-                    latitude = location.getLatitude();
-                }
-            }
+                    if (checkLocation(location)){
+                        try {
+                            doPortGetCityInfo();
 
-            @Override
-            public void OnLocationChange(Location location) {
-                if (null!=location){
-                    locationOnChange[0] = location;
-                }
-                Logger.log(Logger.Type.DEBUG, " service 2 ----longitude = "+longitude +"  latitude = "+latitude);
-            }
-        });
-
-        while (true){
-            SystemClock.sleep(interval);
-             Location location = locationOnChange[0];
-            if (!doGetLocationInfoPort && null != location){
-                doGetLocationInfoPort = true;
-            }
-
-            if (doGetLocationInfoPort){
-
-                if (null == location){
-                    try {
-                        doPortGetCityInfo();
-                    } catch (UnsupportedEncodingException e) {
-                        e.printStackTrace();
+                        } catch (UnsupportedEncodingException e) {
+                            e.printStackTrace();
+                        }
                     }
-                    doGetLocationInfoPort = false;
-                    continue;
-                }
-
-                double lon_ =  location == null ? 0 : Math.abs(longitude - location.getLongitude());
-                double lat_ =  location == null ? 0 : Math.abs(latitude = location.getLatitude());
-
-                if ((Math.pow(lon_,2) + Math.pow(lat_,2)) > Math.pow(0.05,2)){
-                    longitude = location == null ? longitude : location.getLongitude();
-                    latitude = location == null ? latitude : location.getLatitude();
-
-                    try {
-                        doPortGetCityInfo();
-                    } catch (UnsupportedEncodingException e) {
-                        e.printStackTrace();
-                    }
-                    doGetLocationInfoPort = false;
                 }
             }
+        }, null);
+
+    }
+
+    private boolean checkLocation(Location location){
+        assert location!=null;
+
+        double lon_ =  Math.abs(longitude - location.getLongitude());
+        double lat_ =  Math.abs(latitude - location.getLatitude());
+
+        if ((Math.pow(lon_,2) + Math.pow(lat_,2)) > Math.pow(0.05,2)){
+            longitude = location.getLongitude();
+            latitude = location.getLatitude();
+
+            return true;
         }
+        return false;
     }
 
     private void doPortGetCityInfo() throws UnsupportedEncodingException {
@@ -118,7 +101,7 @@ public class LocationService extends IntentService {
 
                     if (doPunch){
                         ServiceCallBackManager.getInstance().callback(ServiceCallBackType.PUNCH, basic);
-                        interval = 6000;
+                        interval = 1000 * 60;
                         doPunch = false;
                     }
 

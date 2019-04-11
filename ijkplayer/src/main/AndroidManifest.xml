@@ -1,2 +1,12 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.gmself.stidio.gm.ijkplayer" />
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.gmself.stidio.gm.ijkplayer">
+
+    <application android:allowBackup="false"
+        tools:replace="android:allowBackup">
+        <activity android:name=".MainActivity"
+            android:theme="@style/Theme.AppCompat.NoActionBar">
+        </activity>
+    </application>
+
+</manifest>

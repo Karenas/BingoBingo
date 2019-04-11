@@ -39,11 +39,12 @@ public class LocationInfo {
      *
      * @return
      */
-    public String getLngAndLat(OnLocationResultListener onLocationResultListener) {
+    public String getLngAndLat(OnLocationResultListener onLocationResultListener, OnLocationChangeListener onLocationChangeListener) {
 //        double latitude = 0.0;
 //        double longitude = 0.0;
 
-        mOnLocationListener = onLocationResultListener;
+        mOnLocationResultListener = onLocationResultListener;
+        mOnLocationChangeListener = onLocationChangeListener;
 
         String locationProvider = null;
         locationManager = (LocationManager) mContext.getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
@@ -68,13 +69,15 @@ public class LocationInfo {
             Location location = locationManager.getLastKnownLocation(locationProvider);
             if (location != null) {
                 //不为空,显示地理位置经纬度
-                if (mOnLocationListener != null) {
-                    mOnLocationListener.onLocationResult(location);
+                if (mOnLocationResultListener != null) {
+                    mOnLocationResultListener.onLocationResult(location);
                 }
 
             }
-            //监视地理位置变化
-            locationManager.requestLocationUpdates(locationProvider, 3000, 1, locationListener);
+            if (mOnLocationChangeListener!=null){
+                //监视地理位置变化
+                locationManager.requestLocationUpdates(locationProvider, 3000, 1, locationListener);
+            }
         }
         return null;
     }
@@ -103,8 +106,8 @@ public class LocationInfo {
         //当坐标改变时触发此函数，如果Provider传进相同的坐标，它就不会被触发
         @Override
         public void onLocationChanged(Location location) {
-            if (mOnLocationListener != null) {
-                mOnLocationListener.OnLocationChange(location);
+            if (mOnLocationChangeListener != null) {
+                mOnLocationChangeListener.OnLocationChange(location);
             }
         }
     };
@@ -113,11 +116,16 @@ public class LocationInfo {
         locationManager.removeUpdates(locationListener);
     }
 
-    private OnLocationResultListener mOnLocationListener;
+    private OnLocationResultListener mOnLocationResultListener;
+
+    private OnLocationChangeListener mOnLocationChangeListener;
 
     public interface OnLocationResultListener {
         void onLocationResult(Location location);
 
+    }
+
+    public interface OnLocationChangeListener{
         void OnLocationChange(Location location);
     }
 }
