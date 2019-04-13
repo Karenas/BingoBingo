@@ -9,6 +9,7 @@ import com.gmself.studio.mg.basemodule.net_work.http_core.listener.OkHttpListene
 import com.gmself.studio.mg.basemodule.service.ServiceCallBack;
 import com.gmself.studio.mg.basemodule.service.ServiceCallBackManager;
 import com.gmself.studio.mg.basemodule.service.ServiceCallBackType;
+import com.gmself.studio.mg.bingobingo.overall.module.weather.doPort.ReqHFWeatherForecast;
 import com.gmself.studio.mg.bingobingo.overall.module.weather.doPort.ReqHFWeatherNow;
 import com.gmself.studio.mg.bingobingo.overall.module.weather.entity.port_entity.Post_HFWeatherNow;
 
@@ -24,18 +25,19 @@ public class WeatherMaker{
     }
 
     private DataBox dataBox;
-    private Context mContext;
+//    private Context mContext;
 
 
 
     public void init(Context context){
-        this.mContext = context;
+//        this.mContext = context;
+        this.dataBox = new DataBox();
     }
 
     public void freed(){
         ServiceCallBackManager.getInstance().unRegisterServiceCallBack(ServiceCallBackType.WEATHER);
         dataBox = null;
-        mContext = null;
+//        mContext = null;
     }
 
     public void registerServiceCallBack(){
@@ -53,19 +55,41 @@ public class WeatherMaker{
             dataBox.setBaseData(param);
 
             reqNowWeather(dataBox.getCityID());
-
+            reqForecastWeather(dataBox.getCityID());
             return 0;
         }
     }
 
     private void reqNowWeather(String cityID){
         ReqHFWeatherNow reqHFWeatherNow = new ReqHFWeatherNow();
-        reqHFWeatherNow.doPort(mContext, cityID, new OkHttpListener() {
+        reqHFWeatherNow.doPort(null, cityID, new OkHttpListener() {
             @Override
             public void onSuccess(String jsonStr) {
                 Post_HFWeatherNow weatherNow = JSON.parseObject(jsonStr, Post_HFWeatherNow.class);
 
+                dataBox.setNowWeather(null);
+            }
 
+            @Override
+            public void onError(BingoNetWorkException resultCode) {
+
+            }
+
+            @Override
+            public void onFinally() {
+
+            }
+        });
+    }
+
+    private void reqForecastWeather(String cityID){
+        ReqHFWeatherForecast reqHFWeatherForecast = new ReqHFWeatherForecast();
+        reqHFWeatherForecast.doPort(null, cityID, new OkHttpListener() {
+            @Override
+            public void onSuccess(String jsonStr) {
+                Post_HFWeatherNow weatherNow = JSON.parseObject(jsonStr, Post_HFWeatherNow.class);
+
+                dataBox.setNowWeather(null);
             }
 
             @Override

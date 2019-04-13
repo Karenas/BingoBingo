@@ -52,6 +52,10 @@ public class LinearLayout_homeRv extends LinearLayout{
     public void turnToTouch(float touchX, float touchY, float maxX, float maxY){
         setCameraDistance(scale * 10);
 
+        if (centerPoint == null){
+            makeCenterPointInFatherWindow();
+        }
+
         float diffX = centerPoint[0] - touchX;
         float diffY = centerPoint[1] - touchY;
 

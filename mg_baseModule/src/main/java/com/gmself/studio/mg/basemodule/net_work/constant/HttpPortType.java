@@ -17,6 +17,8 @@ public enum HttpPortType {
 
     REQ_HF_WEATHER_NOW,
 
+    REQ_HF_WEATHER_FORECAST,
+
 
     ;
 

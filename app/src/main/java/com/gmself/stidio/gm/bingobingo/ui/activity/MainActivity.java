@@ -22,6 +22,7 @@ import com.gmself.studio.mg.basemodule.base.ui.activity.BaseActivity;
 import com.gmself.studio.mg.basemodule.constant.PermissionTag;
 import com.gmself.studio.mg.basemodule.net_work.exception.BingoNetWorkException;
 import com.gmself.studio.mg.basemodule.net_work.http_core.listener.OkHttpListener;
+import com.gmself.studio.mg.bingobingo.overall.module.weather.WeatherMaker;
 
 public class MainActivity extends BaseActivity {
 
@@ -65,6 +66,8 @@ public class MainActivity extends BaseActivity {
 
     private void registerGetCityIDListener(){
         ServiceCallBackManager.getInstance().registerServiceCallBack(ServiceCallBackType.PUNCH, locationListener);
+        WeatherMaker.getInstance().init(this);
+        WeatherMaker.getInstance().registerServiceCallBack();
     }
 
     ServiceCallBack locationListener = new LocationListener();

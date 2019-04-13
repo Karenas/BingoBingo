@@ -21,6 +21,7 @@ import com.gmself.studio.mg.basemodule.mg_dataProcess.MGThreadTool;
 import com.gmself.studio.mg.basemodule.mg_dataProcess.MGThreadTool_processing;
 import com.gmself.studio.mg.bingobingo.overall.R;
 import com.gmself.studio.mg.bingobingo.overall.entity.EntityHomeRvItem;
+import com.gmself.studio.mg.bingobingo.overall.module.weather.WeatherMaker;
 import com.gmself.studio.mg.bingobingo.overall.ui.adapter.AdapterOverall_Home_rv;
 import com.gmself.studio.mg.bingobingo.overall.ui.customView.RecyclerView_home;
 
@@ -39,7 +40,6 @@ public class BingoHomeActivity extends BaseActivity{
 
     private static final Random random = new Random();
 
-    private CV_smallVideoView cvSmallVideoView;
 
     private RecyclerView_home mRecyclerView;
 
@@ -47,7 +47,7 @@ public class BingoHomeActivity extends BaseActivity{
 
     private List<EntityHomeRvItem> mailList;
 
-    private static final String[] functionList = {"图片文字识别", "动效展示", "字体切换", "待开放", "待开放", "待开放", "待开放", "待开放", "待开放"};
+    private static final String[] functionList = {"图片文字识别", "video", "动效展示", "字体切换", "待开放", "待开放", "待开放", "待开放", "待开放", "待开放"};
 
     @Override
     protected int setLayoutID() {
@@ -56,14 +56,7 @@ public class BingoHomeActivity extends BaseActivity{
 
     @Override
     public void initView() {
-        cvSmallVideoView = findViewById(R.id.cv_video);
         mRecyclerView = findViewById(R.id.overall_home_rv);
-
-        String videoPath = "/storage/emulated/0/DCIM/Camera/VID_20190411_153300.mp4";
-//        String videoPath = "http://www.jmzsjy.com/UploadFile/%E5%BE%AE%E8%AF%BE/%E5%9C%B0%E6%96%B9%E9%A3%8E%E5%91%B3%E5%B0%8F%E5%90%83%E2%80%94%E2%80%94%E5%AE%AB%E5%BB%B7%E9%A6%99%E9%85%A5%E7%89%9B%E8%82%89%E9%A5%BC.mp4";
-
-        cvSmallVideoView.setVideoPath(videoPath);
-        cvSmallVideoView.startVideo();
 
         initMainList();
         adapter = new AdapterOverall_Home_rv(this, mailList);
@@ -111,10 +104,10 @@ public class BingoHomeActivity extends BaseActivity{
                     case 0:
                         Manager_RouterM.getInstance().router_goto(ENUM_RouterE.ACTIVITY_OCR_MAIN);
                         break;
-                    case 1:
+                    case 2:
                         Manager_RouterM.getInstance().router_goto(ENUM_RouterE.ACTIVITY_FREE_FLYER_HOME);
                         break;
-                    case 2:
+                    case 3:
                         Manager_RouterM.getInstance().router_goto(ENUM_RouterE.ACTIVITY_FONT_CONVERSION_HOME);
                         break;
                 }
@@ -136,6 +129,8 @@ public class BingoHomeActivity extends BaseActivity{
             rvItem.setName(functionList[i]);
             rvItem.setBackGroundColor(Color.argb(randomColor(), randomColor(), randomColor(), randomColor()));
             rvItem.setHeight(randomHeight());
+            rvItem.setHolderType(i==1? EntityHomeRvItem.TYPE.VIDEO : EntityHomeRvItem.TYPE.NORMAL);
+
             mailList.add(rvItem);
         }
     }

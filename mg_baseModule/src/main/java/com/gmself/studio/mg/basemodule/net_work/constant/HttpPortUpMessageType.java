@@ -29,7 +29,7 @@ public enum HttpPortUpMessageType {
 
     KEY_HF_WEATHER("key"),
 
-    CITY_ID_HF_WEATHER("cityId"),
+    CITY_ID_HF_WEATHER("cityID"),
 
     ;
 

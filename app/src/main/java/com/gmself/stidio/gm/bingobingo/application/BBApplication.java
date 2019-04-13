@@ -21,7 +21,7 @@ public class BBApplication extends Application {
     public void onCreate() {
         super.onCreate();
 
-        BaseConfig.getInstance().setRunDebug(true);
+        BaseConfig.getInstance().setRunDebug(isRunDebug);
 
         OkHttpManger.getInstance().initHttp(this);
 

@@ -21,7 +21,8 @@ public class PortUrl {
 //    private static final String debugPortIp = "http://192.168.1.236:52001";
 //    private static final String debugPortIp = "http://192.168.1.233:52001";//薛赟
 
-    private static final String releasePortIp = "https://pms.hntpsjwy.com";
+//    private static final String releasePortIp = "https://pms.hntpsjwy.com";
+    private static final String releasePortIp = "http://www.gmself.com";
 
     public static String getUrl(HttpPortType httpPortType){
         String url = null;
@@ -31,10 +32,15 @@ public class PortUrl {
                 break;
             case UPLOAD_FILE:
                 url = "/UploadAllObjectServlet?server=upload&";
-
                 return releasePortIp+url;
             case TEST:
                 url = "/bingobingo/m_subject/punch";
+                break;
+            case REQ_HF_WEATHER_NOW:
+                url = "/bingobingo/m_subject/requestWeatherNow";
+                break;
+            case REQ_HF_WEATHER_FORECAST:
+                url = "/bingobingo/m_subject/requestWeatherForecast";
                 break;
             default:
                 break;

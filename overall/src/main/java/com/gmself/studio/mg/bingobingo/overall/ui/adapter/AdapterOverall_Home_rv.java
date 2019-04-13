@@ -9,6 +9,7 @@ import android.widget.AdapterView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.gmself.studio.mg.basemodule.customViews.CV_smallVideoView;
 import com.gmself.studio.mg.bingobingo.overall.R;
 import com.gmself.studio.mg.bingobingo.overall.entity.EntityHomeRvItem;
 import com.gmself.studio.mg.bingobingo.overall.ui.customView.LinearLayout_homeRv;
@@ -42,11 +43,26 @@ public class AdapterOverall_Home_rv extends RecyclerView.Adapter<AdapterOverall_
     }
 
     @Override
+    public int getItemViewType(int position) {
+        return mList.get(position).getHolderType().ordinal();
+    }
+
+    @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType)
     {
-        View view= LayoutInflater.from(mContext).inflate(R.layout.adapter_overall_rv_item_home, parent,
-                false);
-        MyViewHolder holder = new MyViewHolder(view);
+        View view;
+        MyViewHolder holder;
+
+        if (viewType == EntityHomeRvItem.TYPE.VIDEO.ordinal()){
+            view= LayoutInflater.from(mContext).inflate(R.layout.adapter_overall_rv_item_video_home, parent,
+                    false);
+
+        }else {
+            view= LayoutInflater.from(mContext).inflate(R.layout.adapter_overall_rv_item_home, parent,
+                    false);
+        }
+
+        holder = new MyViewHolder(view, viewType);
         view.setOnClickListener(this);
         view.setOnLongClickListener(this);
         return holder;
@@ -58,9 +74,22 @@ public class AdapterOverall_Home_rv extends RecyclerView.Adapter<AdapterOverall_
         holder.itemView.setTag(position);
 
         EntityHomeRvItem item = mList.get(position);
-        holder.name.setText(item.getName());
 
-        holder.name.setOnClickListener(new View.OnClickListener() {
+        switch (item.getHolderType()){
+            case VIDEO:
+                createVideoView(holder, item);
+                break;
+            default:
+                createNormalView(holder, item);
+                break;
+        }
+
+    }
+
+    private void createNormalView(MyViewHolder holder, EntityHomeRvItem item){
+        holder.name_normal.setText(item.getName());
+
+        holder.name_normal.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Toast.makeText(mContext, "点击到了文字", Toast.LENGTH_LONG).show();
@@ -71,6 +100,15 @@ public class AdapterOverall_Home_rv extends RecyclerView.Adapter<AdapterOverall_
         holder.itemView.setMinimumHeight(item.getHeight());
     }
 
+    private void createVideoView(MyViewHolder holder, EntityHomeRvItem item){
+
+        String videoPath = "/storage/emulated/0/DCIM/Camera/VID_20190411_153300.mp4";
+//        String videoPath = "http://www.jmzsjy.com/UploadFile/%E5%BE%AE%E8%AF%BE/%E5%9C%B0%E6%96%B9%E9%A3%8E%E5%91%B3%E5%B0%8F%E5%90%83%E2%80%94%E2%80%94%E5%AE%AB%E5%BB%B7%E9%A6%99%E9%85%A5%E7%89%9B%E8%82%89%E9%A5%BC.mp4";
+
+        holder.cv_smallVideoView_video.setVideoPath(videoPath);
+        holder.cv_smallVideoView_video.startVideo();
+    }
+
     @Override
     public int getItemCount()
     {
@@ -79,14 +117,23 @@ public class AdapterOverall_Home_rv extends RecyclerView.Adapter<AdapterOverall_
 
     class MyViewHolder extends RecyclerView.ViewHolder
     {
-        TextView name;
-//        LinearLayout_homeRv layout;
+        EntityHomeRvItem.TYPE type;
 
-        public MyViewHolder(View view)
+        TextView name_normal;
+        CV_smallVideoView cv_smallVideoView_video;
+
+        public MyViewHolder(View view, int viewType)
         {
             super(view);
-            name = view.findViewById(R.id.overall_home_rv_item_name_tv);
-//            layout = view.findViewById(R.id.overall_home_rv_item_ll);
+            type = EntityHomeRvItem.TYPE.values()[viewType];
+            switch (type){
+                case VIDEO:
+                    cv_smallVideoView_video = view.findViewById(R.id.cv_video);
+                    break;
+                default:
+                    name_normal = view.findViewById(R.id.overall_home_rv_item_name_tv);
+                    break;
+            }
         }
     }
 
