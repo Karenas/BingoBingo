@@ -116,7 +116,7 @@ public class AdapterOverall_Home_rv extends RecyclerView.Adapter<AdapterOverall_
 //        holder.cv_smallVideoView_video.startVideo();
 
 
-            Glide.with(mContext).load("file:///android_asset/Cloudy.gif").asGif().diskCacheStrategy(DiskCacheStrategy.RESULT).into(holder.iv_video);
+//            Glide.with(mContext).load("file:///android_asset/Cloudy.gif").asGif().diskCacheStrategy(DiskCacheStrategy.RESULT).into(holder.iv_video);
 
     }
 

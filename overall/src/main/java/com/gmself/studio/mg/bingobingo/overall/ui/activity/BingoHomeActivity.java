@@ -7,6 +7,7 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.MotionEvent;
+import android.view.SurfaceHolder;
 import android.view.View;
 import android.widget.Toast;
 
@@ -24,6 +25,7 @@ import com.gmself.studio.mg.bingobingo.overall.entity.EntityHomeRvItem;
 import com.gmself.studio.mg.bingobingo.overall.module.weather.WeatherMaker;
 import com.gmself.studio.mg.bingobingo.overall.ui.adapter.AdapterOverall_Home_rv;
 import com.gmself.studio.mg.bingobingo.overall.ui.customView.RecyclerView_home;
+import com.gmself.studio.mg.bingobingo.overall.ui.customView.WeatherAnim_surface_home;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,6 +42,7 @@ public class BingoHomeActivity extends BaseActivity{
 
     private static final Random random = new Random();
 
+    private WeatherAnim_surface_home weatherAnim_surface_view;
 
     private RecyclerView_home mRecyclerView;
 
@@ -57,6 +60,9 @@ public class BingoHomeActivity extends BaseActivity{
     @Override
     public void initView() {
         mRecyclerView = findViewById(R.id.overall_home_rv);
+//        weatherAnim_surface_view = findViewById(R.id.overall_home_weather_sv);
+//        SurfaceHolder mSurfaceHolder = weatherAnim_surface_view.getHolder();
+//        mSurfaceHolder.addCallback(this);
 
         initMainList();
         adapter = new AdapterOverall_Home_rv(this, mailList);
