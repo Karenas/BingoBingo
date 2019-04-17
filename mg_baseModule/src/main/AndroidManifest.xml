@@ -8,4 +8,11 @@
 
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
 
+    <application>
+
+        <meta-data
+            android:name="com.gmself.studio.mg.basemodule.glidepackaging.GlideModelConfig"
+            android:value="GlideModule"/>
+    </application>
+
 </manifest>

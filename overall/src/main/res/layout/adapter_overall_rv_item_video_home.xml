@@ -9,9 +9,15 @@
     android:layout_marginRight="2dp"
     >
 
-    <com.gmself.studio.mg.basemodule.customViews.CV_smallVideoView
-        android:id="@+id/cv_video"
+    <!--<com.gmself.studio.mg.basemodule.customViews.CV_smallVideoView-->
+        <!--android:id="@+id/cv_video"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"/>-->
+
+    <ImageView
+        android:id="@+id/iv_video"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        />
 
 </com.gmself.studio.mg.bingobingo.overall.ui.customView.LinearLayout_homeRv>
