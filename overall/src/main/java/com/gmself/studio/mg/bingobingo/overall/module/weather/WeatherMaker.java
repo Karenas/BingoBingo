@@ -25,7 +25,7 @@ public class WeatherMaker{
     }
 
     private DataBox dataBox;
-//    private Context mContext;
+    private Weather_layout_view weatherLayoutView_now;
 
 
 
@@ -37,8 +37,26 @@ public class WeatherMaker{
     public void freed(){
         ServiceCallBackManager.getInstance().unRegisterServiceCallBack(ServiceCallBackType.WEATHER);
         dataBox = null;
-//        mContext = null;
+        weatherLayoutView_now = null;
     }
+
+    public void setWeatherLayoutView(Weather_layout_view weatherLayoutView){
+        this.weatherLayoutView_now = weatherLayoutView;
+    }
+
+    private void updateUI(){
+        if (weatherLayoutView_now!=null){
+            refreshHomeWeatherView();
+        }
+    }
+
+    private void refreshHomeWeatherView(){
+//        weatherLayoutView_now.set
+    }
+
+
+
+
 
     public void registerServiceCallBack(){
         ServiceCallBackManager.getInstance().registerServiceCallBack(
@@ -66,8 +84,8 @@ public class WeatherMaker{
             @Override
             public void onSuccess(String jsonStr) {
                 Post_HFWeatherNow weatherNow = JSON.parseObject(jsonStr, Post_HFWeatherNow.class);
-
                 dataBox.setNowWeather(null);
+                updateUI();
             }
 
             @Override
@@ -88,8 +106,8 @@ public class WeatherMaker{
             @Override
             public void onSuccess(String jsonStr) {
                 Post_HFWeatherNow weatherNow = JSON.parseObject(jsonStr, Post_HFWeatherNow.class);
-
                 dataBox.setNowWeather(null);
+                updateUI();
             }
 
             @Override
