@@ -77,10 +77,10 @@ public class FreeItemView extends View {
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
 //        if (inInit){
-            int width_ = getDefaultSize(width);
-            int height_ = getDefaultSize(height);
-            //设置宽高
-            setMeasuredDimension(width_, height_);
+        int width_ = getDefaultSize(width);
+        int height_ = getDefaultSize(height);
+        //设置宽高
+        setMeasuredDimension(width_, height_);
 //            inInit = false;
 //        }else {
 ////            width = getDefaultSize(widthMeasureSpec);

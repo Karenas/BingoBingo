@@ -65,8 +65,8 @@ public class WeatherAnim_surface_home extends SurfaceView implements SurfaceHold
     private boolean mIsDrawing;
     //画笔
     private Paint mPaint;
-    //路径
-    private Path mPath;
+
+    private RectF rectF;
 
     private void initView() {
         mHolder = getHolder();
@@ -74,13 +74,8 @@ public class WeatherAnim_surface_home extends SurfaceView implements SurfaceHold
         mHolder.addCallback(this);
 
         mHolder.setFormat(PixelFormat.TRANSLUCENT);//使窗口支持透明度
-        mPath=new Path();
         //初始化画笔
         mPaint=new Paint();
-//        mPaint.setStyle(Paint.Style.STROKE);
-//        mPaint.setStrokeWidth(6);
-//        mPaint.setAntiAlias(true);
-//        mPaint.setColor(Color.RED);
         setFocusable(true);
         setFocusableInTouchMode(true);
         this.setKeepScreenOn(true);
@@ -88,11 +83,6 @@ public class WeatherAnim_surface_home extends SurfaceView implements SurfaceHold
 
 ////开启硬件离屏缓存：解决黑色问题，效率比关闭硬件加速高。暂时没有发现其他影响
         setLayerType(LAYER_TYPE_HARDWARE, mPaint);
-
-//        for (int i = 1; i<=185;i++){
-//            image = BitmapFactory.decodeFile(imagePath+"("+i+").png");
-//            bitmaps.add(image);
-//        }
     }
 
     @Override
@@ -120,7 +110,6 @@ public class WeatherAnim_surface_home extends SurfaceView implements SurfaceHold
 
     @Override
     public void run() {
-//        long start =System.currentTimeMillis();
         int index = 1;
         while(mIsDrawing){
             index++;
@@ -129,15 +118,6 @@ public class WeatherAnim_surface_home extends SurfaceView implements SurfaceHold
             }
             draw(index);
             SystemClock.sleep(10);
-
-//            long end = System.currentTimeMillis();
-//            if(end-start<1000){
-//                try{
-//                    Thread.sleep(1000-end+start);
-//                } catch (InterruptedException e) {
-//                    e.printStackTrace();
-//                }
-//            }
         }
 
         reDraw();
@@ -157,18 +137,12 @@ public class WeatherAnim_surface_home extends SurfaceView implements SurfaceHold
             imageUri = imagePath+"("+index+").png";
             image = BitmapFactory.decodeFile(imageUri);
 
-//            if (rectF == null){
-//                rectF = new RectF(0, 0, width, height);   //w和h分别是屏幕的宽和高，也就是你想让图片显示的宽和高
-//            }
-//            Paint paint =new Paint();
-////两个坐标形成变量，规定了渐变的方向和间距大小，着色器为镜像
-//            LinearGradient linearGradient =new LinearGradient(0,0,200,0, Color.RED,Color.BLUE, Shader.TileMode.MIRROR);
-//            paint.setShader(linearGradient);
-//            paint.setStrokeWidth(50);
-//            mCanvas.drawLine(0,getMeasuredHeight()/2,getMeasuredWidth(),getMeasuredHeight()/2, paint);
-//                Paint mPaint = new Paint();
-            mCanvas.drawBitmap(image, 0, 0, mPaint);
-//                canvas.drawBitmap(image, null, rectF, mPaint);
+            if (rectF == null){
+                rectF = new RectF(getWidth()/2, getTop()-50, getRight(), (float) (getBottom()*0.95));   //w和h分别是屏幕的宽和高，也就是你想让图片显示的宽和高
+            }
+//
+//            mCanvas.drawBitmap(image, getMeasuredWidth()/2, getMeasuredHeight()/2, mPaint);
+            mCanvas.drawBitmap(image, null, rectF, mPaint);
 
         }catch (Exception e){
         }finally {
@@ -178,37 +152,70 @@ public class WeatherAnim_surface_home extends SurfaceView implements SurfaceHold
         }
     }
 
-    /**
-     * 绘制触摸滑动路径
-     * @param event MotionEvent
-     * @return true
-     */
     @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        int x=(int) event.getX();
-        int y= (int) event.getY();
-        switch (event.getAction()){
-            case MotionEvent.ACTION_DOWN:
-                Log.d(TAG, "onTouchEvent: down");
-                mPath.moveTo(x,y);
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+//        if (inInit){
+        int width_ = getDefaultSize(widthMeasureSpec);
+        int height_ = getDefaultSize(heightMeasureSpec);
+        //设置宽高
+        setMeasuredDimension(width_, height_);
+//            inInit = false;
+//        }else {
+////            width = getDefaultSize(widthMeasureSpec);
+////            height = getDefaultSize(heightMeasureSpec);
+//
+//            super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+//        }
+
+
+    }
+
+    private int getDefaultSize(int measureSpec) {
+        int specMode = MeasureSpec.getMode(measureSpec);
+        int specSize = MeasureSpec.getSize(measureSpec);
+
+        int result = specSize;
+
+        switch (specMode) {
+            case MeasureSpec.UNSPECIFIED:
                 break;
-            case MotionEvent.ACTION_MOVE:
-                Log.d(TAG, "onTouchEvent: move");
-                mPath.lineTo(x,y);
-                break;
-            case MotionEvent.ACTION_UP:
-                Log.d(TAG, "onTouchEvent: up");
+            case MeasureSpec.AT_MOST:
+            case MeasureSpec.EXACTLY:
                 break;
         }
-        return true;
+        return result;
     }
+
+//    /**
+//     * 绘制触摸滑动路径
+//     * @param event MotionEvent
+//     * @return true
+//     */
+//    @Override
+//    public boolean onTouchEvent(MotionEvent event) {
+//        int x=(int) event.getX();
+//        int y= (int) event.getY();
+//        switch (event.getAction()){
+//            case MotionEvent.ACTION_DOWN:
+//                Log.d(TAG, "onTouchEvent: down");
+//                mPath.moveTo(x,y);
+//                break;
+//            case MotionEvent.ACTION_MOVE:
+//                Log.d(TAG, "onTouchEvent: move");
+//                mPath.lineTo(x,y);
+//                break;
+//            case MotionEvent.ACTION_UP:
+//                Log.d(TAG, "onTouchEvent: up");
+//                break;
+//        }
+//        return true;
+//    }
 
     /**
      * 清屏
      * @return true
      */
     public boolean reDraw(){
-        mPath.reset();
         return true;
     }
 }

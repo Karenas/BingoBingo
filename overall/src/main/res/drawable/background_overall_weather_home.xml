@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <!--<solid android:color="@color/fragment_electricity_background_color" />-->
+
+    <gradient
+        android:startColor="#FF6caadc"
+        android:endColor="#FF2058bf"
+        android:angle="90"
+        />
+
+    <corners android:topLeftRadius="1px"
+        android:topRightRadius="1px"
+        android:bottomRightRadius="3px"
+        android:bottomLeftRadius="3px"/>
+
+    <span style="font-family: Arial, Helvetica, sans-serif;"></span>
+</shape>

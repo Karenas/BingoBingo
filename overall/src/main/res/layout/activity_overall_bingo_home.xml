@@ -1,22 +1,77 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/holo_purple"
     >
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="缤果首页"
-
-        />
-    
-    <com.gmself.studio.mg.bingobingo.overall.ui.customView.WeatherAnim_surface_home
-        android:id="@+id/overall_home_weather_sv"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="500dip"
-        />
+        android:layout_height="180dp"
+        android:background="@drawable/background_overall_weather_home"
+        >
+        <com.gmself.studio.mg.bingobingo.overall.ui.customView.WeatherAnim_surface_home
+            android:id="@+id/overall_home_weather_sv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            />
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dip"
+            android:layout_alignParentStart="true"
+            android:orientation="vertical"
+            >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="2019年4月18日 星期四"
+                android:textSize="20dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="15dp"
+                android:textColor="@android:color/white"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="北京市-通州"
+                android:textSize="15dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="10dp"
+                android:textColor="@android:color/white"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="晴"
+                android:textSize="15dp"
+                android:layout_marginLeft="10dp"
+                android:textColor="@android:color/white"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="偏北风 4 级"
+                android:textSize="15dp"
+                android:layout_marginLeft="10dp"
+                android:textColor="@android:color/white"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="气温 17 ～ 24 度"
+                android:textSize="15dp"
+                android:layout_marginLeft="10dp"
+                android:textColor="@android:color/white"
+                />
+        </LinearLayout>
+    </RelativeLayout>
+
 
     <com.gmself.studio.mg.bingobingo.overall.ui.customView.RecyclerView_home
         android:id="@+id/overall_home_rv"
