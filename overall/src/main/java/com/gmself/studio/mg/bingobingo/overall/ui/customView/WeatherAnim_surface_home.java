@@ -5,9 +5,14 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.LinearGradient;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.graphics.PixelFormat;
+import android.graphics.PorterDuff;
+import android.graphics.RadialGradient;
 import android.graphics.RectF;
+import android.graphics.Shader;
 import android.os.SystemClock;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -20,6 +25,9 @@ import java.util.List;
 
 /**
  * Created by guomeng on 4/17.
+ *
+ * https://blog.csdn.net/z479403374/article/details/50606572
+ *
  */
 
 public class WeatherAnim_surface_home extends SurfaceView implements SurfaceHolder.Callback, Runnable{
@@ -64,16 +72,22 @@ public class WeatherAnim_surface_home extends SurfaceView implements SurfaceHold
         mHolder = getHolder();
         //添加回调
         mHolder.addCallback(this);
+
+        mHolder.setFormat(PixelFormat.TRANSLUCENT);//使窗口支持透明度
         mPath=new Path();
         //初始化画笔
         mPaint=new Paint();
-        mPaint.setStyle(Paint.Style.STROKE);
-        mPaint.setStrokeWidth(6);
-        mPaint.setAntiAlias(true);
-        mPaint.setColor(Color.RED);
+//        mPaint.setStyle(Paint.Style.STROKE);
+//        mPaint.setStrokeWidth(6);
+//        mPaint.setAntiAlias(true);
+//        mPaint.setColor(Color.RED);
         setFocusable(true);
         setFocusableInTouchMode(true);
         this.setKeepScreenOn(true);
+        setZOrderOnTop(true);//使surfaceview放到最顶层
+
+////开启硬件离屏缓存：解决黑色问题，效率比关闭硬件加速高。暂时没有发现其他影响
+        setLayerType(LAYER_TYPE_HARDWARE, mPaint);
 
 //        for (int i = 1; i<=185;i++){
 //            image = BitmapFactory.decodeFile(imagePath+"("+i+").png");
@@ -83,8 +97,15 @@ public class WeatherAnim_surface_home extends SurfaceView implements SurfaceHold
 
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
+    }
+
+    public void runAnim(){
         mIsDrawing=true;
         new Thread(this).start();
+    }
+
+    public void stopAnim(){
+        mIsDrawing = false;
     }
 
     @Override
@@ -107,7 +128,6 @@ public class WeatherAnim_surface_home extends SurfaceView implements SurfaceHold
                 index = 1;
             }
             draw(index);
-
             SystemClock.sleep(10);
 
 //            long end = System.currentTimeMillis();
@@ -119,6 +139,8 @@ public class WeatherAnim_surface_home extends SurfaceView implements SurfaceHold
 //                }
 //            }
         }
+
+        reDraw();
     }
 
 
@@ -130,20 +152,20 @@ public class WeatherAnim_surface_home extends SurfaceView implements SurfaceHold
             //锁定画布并返回画布对象
             mCanvas=mHolder.lockCanvas();
 
-//            //接下去就是在画布上进行一下draw
-            mCanvas.drawColor(Color.WHITE);
-//            mCanvas.drawPath(mPath,mPaint);
-//            mPath.reset();
-            imageUri = imagePath+"("+index+").png";
+            mCanvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);//绘制透明色
 
-//            if (imageResID != -1){
-//            if (image == null)
+            imageUri = imagePath+"("+index+").png";
             image = BitmapFactory.decodeFile(imageUri);
 
 //            if (rectF == null){
 //                rectF = new RectF(0, 0, width, height);   //w和h分别是屏幕的宽和高，也就是你想让图片显示的宽和高
 //            }
-
+//            Paint paint =new Paint();
+////两个坐标形成变量，规定了渐变的方向和间距大小，着色器为镜像
+//            LinearGradient linearGradient =new LinearGradient(0,0,200,0, Color.RED,Color.BLUE, Shader.TileMode.MIRROR);
+//            paint.setShader(linearGradient);
+//            paint.setStrokeWidth(50);
+//            mCanvas.drawLine(0,getMeasuredHeight()/2,getMeasuredWidth(),getMeasuredHeight()/2, paint);
 //                Paint mPaint = new Paint();
             mCanvas.drawBitmap(image, 0, 0, mPaint);
 //                canvas.drawBitmap(image, null, rectF, mPaint);

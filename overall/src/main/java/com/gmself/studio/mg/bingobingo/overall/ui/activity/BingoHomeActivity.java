@@ -60,9 +60,7 @@ public class BingoHomeActivity extends BaseActivity{
     @Override
     public void initView() {
         mRecyclerView = findViewById(R.id.overall_home_rv);
-//        weatherAnim_surface_view = findViewById(R.id.overall_home_weather_sv);
-//        SurfaceHolder mSurfaceHolder = weatherAnim_surface_view.getHolder();
-//        mSurfaceHolder.addCallback(this);
+        weatherAnim_surface_view = findViewById(R.id.overall_home_weather_sv);
 
         initMainList();
         adapter = new AdapterOverall_Home_rv(this, mailList);
@@ -93,6 +91,18 @@ public class BingoHomeActivity extends BaseActivity{
     @Override
     public void setFunction() {
 
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        weatherAnim_surface_view.runAnim();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        weatherAnim_surface_view.stopAnim();
     }
 
     private void jumpPage(View view, final int position){
