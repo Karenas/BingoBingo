@@ -6,6 +6,7 @@
     >
 
     <com.gmself.studio.mg.bingobingo.overall.module.weather.Weather_layout_view
+        android:id="@+id/overall_home_weather_root_ll"
         android:layout_width="match_parent"
         android:layout_height="180dp" />
 

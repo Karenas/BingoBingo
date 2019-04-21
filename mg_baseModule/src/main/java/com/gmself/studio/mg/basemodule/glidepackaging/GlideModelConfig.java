@@ -9,6 +9,7 @@ import com.bumptech.glide.load.DecodeFormat;
 import com.bumptech.glide.load.engine.cache.ExternalCacheDiskCacheFactory;
 import com.bumptech.glide.load.model.GlideUrl;
 import com.bumptech.glide.module.GlideModule;
+import com.gmself.studio.mg.basemodule.utils.DirsTools;
 
 import java.io.InputStream;
 
@@ -31,7 +32,7 @@ public class GlideModelConfig implements GlideModule {
 
 //        builder.setDiskCache(new InternalCacheDiskCacheFactory(context, diskSize));  //内存中
 
-//        builder.setDiskCache(new ExternalCacheDiskCacheFactory(context, "/sdcard/glide/", diskSize)); //sd卡中
+        builder.setDiskCache(new ExternalCacheDiskCacheFactory(context, DirsTools.GetImageCachePath(), diskSize)); //sd卡中
 
 //        // 默认内存和图片池大小
 //        MemorySizeCalculator calculator = new MemorySizeCalculator(context);
@@ -45,8 +46,8 @@ public class GlideModelConfig implements GlideModule {
 //        builder.setBitmapPool(new LruBitmapPool(memorySize));
 
         // 定义图片格式
-        builder.setDecodeFormat(DecodeFormat.PREFER_ARGB_8888);
-//        builder.setDecodeFormat(DecodeFormat.PREFER_RGB_565); // 默认
+//        builder.setDecodeFormat(DecodeFormat.PREFER_ARGB_8888);
+        builder.setDecodeFormat(DecodeFormat.PREFER_RGB_565); // 默认
     }
 
     @Override

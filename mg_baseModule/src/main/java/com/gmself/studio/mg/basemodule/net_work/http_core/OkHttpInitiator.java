@@ -3,6 +3,7 @@ package com.gmself.studio.mg.basemodule.net_work.http_core;
 import android.content.Context;
 import android.util.Log;
 
+import com.alibaba.fastjson.JSON;
 import com.gmself.studio.mg.basemodule.log_tool.Logger;
 import com.gmself.studio.mg.basemodule.net_work.HttpConfig;
 import com.gmself.studio.mg.basemodule.net_work.constant.HttpPortType;
@@ -10,12 +11,17 @@ import com.gmself.studio.mg.basemodule.net_work.constant.HttpPortUpMessageType;
 import com.gmself.studio.mg.basemodule.net_work.constant.PortUrl;
 import com.gmself.studio.mg.basemodule.net_work.exception.BingoNetWorkException;
 import com.gmself.studio.mg.basemodule.net_work.exception.BingoNetWorkExceptionType;
+import com.gmself.studio.mg.basemodule.net_work.http_core.listener.OKHttpListenerDownload;
+import com.gmself.studio.mg.basemodule.net_work.http_core.listener.OKHttpListenerJsonObj;
+import com.gmself.studio.mg.basemodule.net_work.http_core.listener.OKHttpListenerJsonStr;
 import com.gmself.studio.mg.basemodule.net_work.http_core.listener.OkHttpListener;
+import com.gmself.studio.mg.basemodule.net_work.http_custom_down_data.HttpDownDateCustom;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.RandomAccessFile;
 import java.security.GeneralSecurityException;
 import java.security.KeyStore;
 import java.security.cert.Certificate;
@@ -63,7 +69,7 @@ import static android.content.ContentValues.TAG;
 
 public class OkHttpInitiator {
 
-    public static final MediaType JSON=MediaType.parse("application/json; charset=utf-8");
+    public static final MediaType JSON_TYPE=MediaType.parse("application/json; charset=utf-8");
 
     private OkHttpClient mOkHttpClient;
 
@@ -318,7 +324,7 @@ public class OkHttpInitiator {
                     return;
                 }
 //                RequestBody body = RequestBody.create(JSON, "{\"phone\": \"13261218644\",\"gcid\": \"0371070\"}");
-                RequestBody body = RequestBody.create(JSON, arg);
+                RequestBody body = RequestBody.create(JSON_TYPE, arg);
 //
 //                FormBody formBody = new FormBody.Builder()
 //                        .add("", "{\n" +
@@ -382,7 +388,7 @@ public class OkHttpInitiator {
                     subscriber.onCompleted();
                     return;
                 }
-                RequestBody body = RequestBody.create(JSON, arg);
+                RequestBody body = RequestBody.create(JSON_TYPE, arg);
 
                 Request request = new Request.Builder()
                         .url(url) // http://ip.taobao.com/service/getIpInfo.php
@@ -421,7 +427,7 @@ public class OkHttpInitiator {
             @Override
             public void onNext(String s) {
                 Logger.log(Logger.Type.NET_PORT, new String[]{"port_down_uploadFile msg= "+s});
-                listener.onSuccess(s);
+                PublicInterceptionHttp200(s, listener);
             }
         });
     }
@@ -469,29 +475,34 @@ public class OkHttpInitiator {
     }
 
 
-    public void downloadFileInNewThread(final Context ctx, String url, File file, final OkHttpListener listener) {
+    public void downloadFileInNewThread(final Context ctx, String url, RandomAccessFile file, final OKHttpListenerDownload listener) {
         Logger.log(Logger.Type.DEBUG, "  下载 downloadFileInNewThread");
-        getObservableDownloadFile(url, file).subscribe(new Subscriber<String>() {
+        getObservableDownloadFile(url, file).subscribe(new Subscriber<DownloadProgress>() {
             @Override
             public void onCompleted() {
                 listener.onFinally();
-//                Log.d(TAG, "onCompleted");
             }
             @Override
             public void onError(Throwable e) {
                 PublicInterceptionNoHttp200(ctx, (BingoNetWorkException)e, listener);
             }
+
             @Override
-            public void onNext(String s) {
-                PublicInterceptionHttp200(s, listener);
+            public void onNext(DownloadProgress downloadProgress) {
+
             }
+//
+//            @Override
+//            public void onNext(String s) {
+//                PublicInterceptionHttp200(s, listener);
+//            }
         });
     }
 
-    private Observable getObservableDownloadFile(final String url, final File file) {
-        Observable observable = Observable.create(new Observable.OnSubscribe<String>() {
+    private Observable getObservableDownloadFile(final String url, final RandomAccessFile file) {
+        Observable observable = Observable.create(new Observable.OnSubscribe<DownloadProgress>() {
             @Override
-            public void call(final Subscriber<? super String> subscriber) {
+            public void call(final Subscriber<? super DownloadProgress> subscriber) {
                 if (null == mOkHttpClient){
                     Logger.logException(new Exception("OkHttpClient not create! please check it in OKHttpManger.initHttp() "), "port url= "+url);
                     subscriber.onError(new BingoNetWorkException(BingoNetWorkExceptionType.INIT_ERROR, "OkHttpClient not create! please check it in OKHttpManger.initHttp() "));
@@ -499,62 +510,176 @@ public class OkHttpInitiator {
                     return;
                 }
 
-                // 父目录是否存在
-                File parent = file.getParentFile();
-                if (!parent.exists()) {
-                    parent.mkdir();
+                if(file==null){
+                    Logger.logException(new Exception("OkHttpClient download error, file is null "), "port url= "+url);
+                    subscriber.onError(new BingoNetWorkException(BingoNetWorkExceptionType.IO_ERROR, "OkHttpClient download error, file is null "));
+                    subscriber.onCompleted();
+                    return;
                 }
-                // 文件是否存在
-                if (!file.exists()) {
-                    try {
-                        file.createNewFile();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-                Request request=new Request.Builder().url(url).get().build();
-                mOkHttpClient.newCall(request)
-                        .enqueue(new Callback() {
-                            @Override
-                            public void onFailure(Call call, final IOException e) {
-                                subscriber.onError(new BingoNetWorkException(BingoNetWorkExceptionType.IO_ERROR, "port_down_curThread url= "+url));
-                            }
 
-                            @Override
-                            public void onResponse(Call call, Response response) throws IOException {
-                                if (response.isSuccessful()) {
-                                    ResponseBody body = response.body();
-                                    // 获取文件总长度
-                                    final long totalLength = body.contentLength();
-                                    //以流的方式进行读取
-                                    InputStream inputStream = body.byteStream();
-                                    FileOutputStream outputStream = new FileOutputStream(file);
-                                    byte[] buffer = new byte[2048];
-                                    int len = 0;
-                                    int num = 0;
-                                    while ((len = inputStream.read(buffer)) != -1){
-                                        num+=len;
-                                        outputStream.write(buffer,0,len);
-                                        final int finalNum = num;
-                                    }
-                                    //读取完关闭流
-                                    outputStream.flush();
-                                    outputStream.close();
-                                    inputStream.close();
-                                    subscriber.onNext("finish");
+                // 获得本地下载的文件大小
+                try {
+                    final long[] totalSize = {0};
+                    final long fileLength = file.length();
+
+//                    if (fileLength > 0 && totalSize == fileLength) {
+//                        // 执行回调
+//                        subscriber.onCompleted();
+//                        return;
+//                    }
+
+                    Request request=new Request.Builder().url(url).header("RANGE", "bytes=" + fileLength + "-") // Http value set breakpoints RANGE
+                            .build();
+
+                    file.seek(fileLength);
+
+                    mOkHttpClient.newCall(request)
+                            .enqueue(new Callback() {
+                                @Override
+                                public void onFailure(Call call, final IOException e) {
+                                    subscriber.onError(new BingoNetWorkException(BingoNetWorkExceptionType.IO_ERROR, "port_down_curThread url= "+url));
                                 }
-                            }
-                        });
 
+                                @Override
+                                public void onResponse(Call call, Response response) throws IOException {
+                                    if (response.isSuccessful()) {
+                                        ResponseBody body = response.body();
+                                        // 获取文件总长度
+                                        final long contentLength = body.contentLength();
+                                        if (totalSize[0] <= 0) {
+                                            totalSize[0] = contentLength;
+                                        }
+                                        //以流的方式进行读取
+                                        InputStream inputStream = body.byteStream();
+                                        byte[] buffer = new byte[2048];
+                                        int len = 0;
+                                        long sum = fileLength;
+                                        float percent = 0;
+
+                                        DownloadProgress downloadProgress = new DownloadProgress();
+                                        while ((len = inputStream.read(buffer)) != -1){
+                                            sum+=len;
+                                            file.write(buffer, 0, len);
+                                            percent = (float) (sum * 100 / totalSize[0]);
+                                            downloadProgress.setPercent(percent);
+                                            downloadProgress.setCompletionSize(sum);
+                                            subscriber.onNext(downloadProgress);
+                                        }
+                                        inputStream.close();
+                                    }
+                                }
+                            });
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }finally {
+                    subscriber.onCompleted();
+                }
             }
         });
         return observable;
     }
 
+//    private Observable getObservableDownloadFile(final String url, final File file) {
+//        Observable observable = Observable.create(new Observable.OnSubscribe<String>() {
+//            @Override
+//            public void call(final Subscriber<? super String> subscriber) {
+//                if (null == mOkHttpClient){
+//                    Logger.logException(new Exception("OkHttpClient not create! please check it in OKHttpManger.initHttp() "), "port url= "+url);
+//                    subscriber.onError(new BingoNetWorkException(BingoNetWorkExceptionType.INIT_ERROR, "OkHttpClient not create! please check it in OKHttpManger.initHttp() "));
+//                    subscriber.onCompleted();
+//                    return;
+//                }
+//
+//                // 父目录是否存在
+//                File parent = file.getParentFile();
+//                if (!parent.exists()) {
+//                    parent.mkdir();
+//                }
+//                // 文件是否存在
+//                if (!file.exists()) {
+//                    try {
+//                        file.createNewFile();
+//                    } catch (IOException e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+//                Request request=new Request.Builder().url(url).get().build();
+//                mOkHttpClient.newCall(request)
+//                        .enqueue(new Callback() {
+//                            @Override
+//                            public void onFailure(Call call, final IOException e) {
+//                                subscriber.onError(new BingoNetWorkException(BingoNetWorkExceptionType.IO_ERROR, "port_down_curThread url= "+url));
+//                            }
+//
+//                            @Override
+//                            public void onResponse(Call call, Response response) throws IOException {
+//                                if (response.isSuccessful()) {
+//                                    ResponseBody body = response.body();
+//                                    // 获取文件总长度
+//                                    final long totalLength = body.contentLength();
+//                                    //以流的方式进行读取
+//                                    InputStream inputStream = body.byteStream();
+//                                    FileOutputStream outputStream = new FileOutputStream(file);
+//                                    byte[] buffer = new byte[2048];
+//                                    int len = 0;
+//                                    int num = 0;
+//                                    while ((len = inputStream.read(buffer)) != -1){
+//                                        num+=len;
+//                                        outputStream.write(buffer,0,len);
+//                                        final int finalNum = num;
+//                                    }
+//                                    //读取完关闭流
+//                                    outputStream.flush();
+//                                    outputStream.close();
+//                                    inputStream.close();
+//                                    subscriber.onNext("finish");
+//                                }
+//                            }
+//                        });
+//
+//            }
+//        });
+//        return observable;
+//    }
+
+    class DownloadProgress{
+        private float percent;
+        private long completionSize;
+
+        public float getPercent() {
+            return percent;
+        }
+
+        public void setPercent(float percent) {
+            this.percent = percent;
+        }
+
+        public long getCompletionSize() {
+            return completionSize;
+        }
+
+        public void setCompletionSize(long completionSize) {
+            this.completionSize = completionSize;
+        }
+    }
+
 
     //公共拦截
     private void PublicInterceptionHttp200(String jsonStr, OkHttpListener listener){
-        listener.onSuccess(jsonStr);
+        if (listener instanceof OKHttpListenerJsonStr){
+            ((OKHttpListenerJsonStr) listener).onSuccess(jsonStr);
+            return;
+        }
+
+        if (listener instanceof OKHttpListenerJsonObj){
+            HttpDownDateCustom date = JSON.parseObject(jsonStr, HttpDownDateCustom.class);
+            if (date.getStatus().getRR().charAt(0) == 'Y'){
+                ((OKHttpListenerJsonObj) listener).onSuccess(date.getResult());
+            }else {
+                //TODO doSome thing
+            }
+
+        }
 
     }
 

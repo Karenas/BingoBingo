@@ -6,6 +6,7 @@ import android.os.SystemClock;
 import android.view.View;
 import android.widget.TextView;
 
+import com.alibaba.fastjson.JSONObject;
 import com.gmself.stidio.gm.bingobingo.Port_test;
 import com.gmself.stidio.gm.bingobingo.R;
 import com.gmself.studio.mg.basemodule.arouter.ENUM_RouterE;
@@ -13,6 +14,7 @@ import com.gmself.studio.mg.basemodule.arouter.Manager_RouterM;
 import com.gmself.studio.mg.basemodule.entity.LocationBasic;
 import com.gmself.studio.mg.basemodule.entity.User;
 import com.gmself.studio.mg.basemodule.environment.DeviceInfo;
+import com.gmself.studio.mg.basemodule.net_work.http_core.listener.OKHttpListenerJsonObj;
 import com.gmself.studio.mg.basemodule.service.ServiceCallBack;
 import com.gmself.studio.mg.basemodule.service.ServiceCallBackManager;
 import com.gmself.studio.mg.basemodule.service.ServiceCallBackType;
@@ -66,7 +68,6 @@ public class MainActivity extends BaseActivity {
 
     private void registerGetCityIDListener(){
         ServiceCallBackManager.getInstance().registerServiceCallBack(ServiceCallBackType.PUNCH, locationListener);
-        WeatherMaker.getInstance().init(this);
         WeatherMaker.getInstance().registerServiceCallBack();
     }
 
@@ -88,9 +89,9 @@ public class MainActivity extends BaseActivity {
         user.setLastLocationId(cityID);
 
         Port_test portTest = new Port_test();
-        portTest.doPort(this, user, new OkHttpListener() {
+        portTest.doPort(this, user, new OKHttpListenerJsonObj() {
             @Override
-            public void onSuccess(String jsonStr) {
+            public void onSuccess(JSONObject jsonObj) {
                 String a = "";
             }
 

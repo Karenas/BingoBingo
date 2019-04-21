@@ -2,15 +2,22 @@ package com.gmself.studio.mg.basemodule.net_work.http_core;
 
 
 import android.content.Context;
+import android.text.TextUtils;
 
 import com.gmself.studio.mg.basemodule.log_tool.Logger;
 import com.gmself.studio.mg.basemodule.net_work.constant.HttpPortType;
 import com.gmself.studio.mg.basemodule.net_work.constant.HttpPortUpMessageType;
 import com.gmself.studio.mg.basemodule.net_work.constant.PortUrl;
+import com.gmself.studio.mg.basemodule.net_work.exception.BingoNetWorkException;
+import com.gmself.studio.mg.basemodule.net_work.exception.BingoNetWorkExceptionType;
+import com.gmself.studio.mg.basemodule.net_work.http_core.listener.OKHttpListenerDownload;
 import com.gmself.studio.mg.basemodule.net_work.http_core.listener.OkHttpListener;
 import com.gmself.studio.mg.basemodule.net_work.http_message.PostUpJsonBean;
+import com.gmself.studio.mg.basemodule.utils.DirsTools;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.RandomAccessFile;
 import java.util.Map;
 
 
@@ -125,7 +132,29 @@ public class OkHttpManger {
         return PortUrl.getUrl(httpPortType);
     }
 
-    public void downloadFileAsyHttp(Context ctx, String url, File file, final OkHttpListener listener){
-        httpInitiator.downloadFileInNewThread(ctx, url, file, listener);
+    public void downloadFileAsyHttp(Context ctx, String url, String saveFileName, OKHttpListenerDownload listener){
+        assert TextUtils.isEmpty(saveFileName);
+
+        checkCachePath();
+        File downFile = new File(DirsTools.GetFileCachePath(), saveFileName);
+        RandomAccessFile file = null;
+        try {
+            file = new RandomAccessFile(downFile.getAbsoluteFile(), "rwd");
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        if (null!= file){
+            httpInitiator.downloadFileInNewThread(ctx, url, file, listener);
+        }else {
+            listener.onError(new BingoNetWorkException(BingoNetWorkExceptionType.IO_ERROR, "Download Local FileNotFound:"+saveFileName));
+        }
+
+    }
+
+    private void checkCachePath(){
+        File file = new File(DirsTools.GetFileCachePath());
+        if (!file.exists()) {
+            file.mkdirs();
+        }
     }
 }

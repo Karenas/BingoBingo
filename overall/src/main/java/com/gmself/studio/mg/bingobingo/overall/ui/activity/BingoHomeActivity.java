@@ -23,6 +23,7 @@ import com.gmself.studio.mg.basemodule.mg_dataProcess.MGThreadTool_processing;
 import com.gmself.studio.mg.bingobingo.overall.R;
 import com.gmself.studio.mg.bingobingo.overall.entity.EntityHomeRvItem;
 import com.gmself.studio.mg.bingobingo.overall.module.weather.WeatherMaker;
+import com.gmself.studio.mg.bingobingo.overall.module.weather.Weather_layout_view;
 import com.gmself.studio.mg.bingobingo.overall.ui.adapter.AdapterOverall_Home_rv;
 import com.gmself.studio.mg.bingobingo.overall.ui.customView.RecyclerView_home;
 import com.gmself.studio.mg.bingobingo.overall.ui.customView.WeatherAnim_surface_home;
@@ -61,6 +62,8 @@ public class BingoHomeActivity extends BaseActivity{
     public void initView() {
         mRecyclerView = findViewById(R.id.overall_home_rv);
         weatherAnim_surface_view = findViewById(R.id.overall_home_weather_sv);
+
+        WeatherMaker.getInstance().bindThis(this, Weather_layout_view.class);
 
         initMainList();
         adapter = new AdapterOverall_Home_rv(this, mailList);
@@ -103,6 +106,12 @@ public class BingoHomeActivity extends BaseActivity{
     protected void onStop() {
         super.onStop();
         weatherAnim_surface_view.stopAnim();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        WeatherMaker.getInstance().freed();
     }
 
     private void jumpPage(View view, final int position){

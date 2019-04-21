@@ -13,6 +13,7 @@ import com.gmself.studio.mg.basemodule.entity.port_entity.Get_HFLocation;
 import com.gmself.studio.mg.basemodule.environment.LocationInfo;
 import com.gmself.studio.mg.basemodule.log_tool.Logger;
 import com.gmself.studio.mg.basemodule.net_work.exception.BingoNetWorkException;
+import com.gmself.studio.mg.basemodule.net_work.http_core.listener.OKHttpListenerJsonStr;
 import com.gmself.studio.mg.basemodule.net_work.http_core.listener.OkHttpListener;
 import com.gmself.studio.mg.basemodule.service.ServiceCallBack;
 import com.gmself.studio.mg.basemodule.service.ServiceCallBackManager;
@@ -92,7 +93,7 @@ public class LocationService extends IntentService {
     private void doPortGetCityInfo() throws UnsupportedEncodingException {
         Port_getLocationInfo portGetLocationInfo = new Port_getLocationInfo();
 
-        portGetLocationInfo.doPort_get(this, longitude + "," + latitude, new OkHttpListener() {
+        portGetLocationInfo.doPort_get(this, longitude + "," + latitude, new OKHttpListenerJsonStr() {
             @Override
             public void onSuccess(String jsonStr) {
                 Get_HFLocation location = JSON.parseObject(jsonStr, Get_HFLocation.class);
