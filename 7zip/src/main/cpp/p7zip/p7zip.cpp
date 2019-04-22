@@ -1,5 +1,6 @@
 //
 // Created by guomeng on 2019/4/22.
+//https://www.jianshu.com/p/4d164d012336
 //
 
 #include "com_gmself_mg_a7zip_Zip7Utils.h"
