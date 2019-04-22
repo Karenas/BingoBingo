@@ -1,26 +1,17 @@
 package com.gmself.studio.mg.bingobingo.overall.ui.adapter;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.gmself.studio.mg.basemodule.customViews.CV_smallVideoView;
 import com.gmself.studio.mg.bingobingo.overall.R;
 import com.gmself.studio.mg.bingobingo.overall.entity.EntityHomeRvItem;
-import com.gmself.studio.mg.bingobingo.overall.ui.customView.LinearLayout_homeRv;
-import com.gmself.studio.mg.bingobingo.overall.ui.listener.OnViewGestureListener;
 
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 public class AdapterOverall_Home_rv extends RecyclerView.Adapter<AdapterOverall_Home_rv.MyViewHolder> implements View.OnClickListener,View.OnLongClickListener

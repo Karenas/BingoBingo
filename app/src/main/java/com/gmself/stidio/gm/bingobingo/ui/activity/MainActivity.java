@@ -11,6 +11,7 @@ import com.gmself.stidio.gm.bingobingo.Port_test;
 import com.gmself.stidio.gm.bingobingo.R;
 import com.gmself.studio.mg.basemodule.arouter.ENUM_RouterE;
 import com.gmself.studio.mg.basemodule.arouter.Manager_RouterM;
+import com.gmself.studio.mg.basemodule.bingoStyle.customViews.CV_ActionSheetDialog;
 import com.gmself.studio.mg.basemodule.entity.LocationBasic;
 import com.gmself.studio.mg.basemodule.entity.User;
 import com.gmself.studio.mg.basemodule.environment.DeviceInfo;
@@ -25,6 +26,8 @@ import com.gmself.studio.mg.basemodule.constant.PermissionTag;
 import com.gmself.studio.mg.basemodule.net_work.exception.BingoNetWorkException;
 import com.gmself.studio.mg.basemodule.net_work.http_core.listener.OkHttpListener;
 import com.gmself.studio.mg.bingobingo.overall.module.weather.WeatherMaker;
+
+import org.w3c.dom.DocumentType;
 
 public class MainActivity extends BaseActivity {
 
@@ -52,10 +55,70 @@ public class MainActivity extends BaseActivity {
     public void setListener() {
         open_tv.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                Manager_RouterM.getInstance().router_goto(ENUM_RouterE.ACTIVITY_OVERALL_HOME);
+            public void onClick(final View v) {
+
+                CV_ActionSheetDialog dialog = new CV_ActionSheetDialog(MainActivity.this);
+                dialog.builder().setCancelable(true).setCanceledOnTouchOutside(true);
+
+                for (final DocumentType type : DocumentType.values()) {
+
+                    dialog.addSheetItem(type.getTypeName(), CV_ActionSheetDialog.SheetItemColor.Black,
+                            new CV_ActionSheetDialog.OnSheetItemClickListener() {
+                                @Override
+                                public void onClick(int which) {
+                                    open_tv.setText(type.getTypeName());
+                                    open_tv.setTag(type.getType());
+                                }
+                            });
+                }
+
+                dialog.show();
+
+//                Manager_RouterM.getInstance().router_goto(ENUM_RouterE.ACTIVITY_OVERALL_HOME);
             }
         });
+    }
+
+    public enum DocumentType {
+
+        /**
+         * 身份证
+         */
+        ID_CARD("0", "员工服务类"),//("ID_card"),
+
+        /**
+         * 护照
+         */
+        PASSPORT("1", "维修类"),//("Passport"),
+
+        /**
+         * 港澳通行证
+         */
+        HONGKONG_AND_MACAO_PASS("2", "费用类"),//("HongKong_and_Macao_pass"),
+
+        /**
+         * 台湾同胞证
+         */
+        TAIWAN_COMPATRIOT_CARD("3", "配套设施类"),//("Taiwan_compatriot_card");
+
+
+        HUANJINGWEISHENG("4", "环境卫生类");
+
+        private String type;
+        private String typeName;
+
+        DocumentType(String type, String typeName) {
+            this.type = type;
+            this.typeName = typeName;
+        }
+
+        public String getType() {
+            return type;
+        }
+
+        public String getTypeName() {
+            return typeName;
+        }
     }
 
     @Override

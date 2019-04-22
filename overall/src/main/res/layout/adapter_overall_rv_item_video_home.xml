@@ -9,7 +9,7 @@
     android:layout_marginRight="2dp"
     >
 
-    <!--<com.gmself.studio.mg.basemodule.customViews.CV_smallVideoView-->
+    <!--<CV_smallVideoViewView&ndash;&gt;-->
         <!--android:id="@+id/cv_video"-->
         <!--android:layout_width="match_parent"-->
         <!--android:layout_height="wrap_content"/>-->

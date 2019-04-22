@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="fragment_water_background_color">#39A1AC</color>
+    <color name="white">#FFFFFF</color>
+    <color name="theme_1">#fc7a1b</color>
+</resources>

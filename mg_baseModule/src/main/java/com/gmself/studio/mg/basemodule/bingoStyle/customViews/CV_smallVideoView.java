@@ -1,4 +1,4 @@
-package com.gmself.studio.mg.basemodule.customViews;
+package com.gmself.studio.mg.basemodule.bingoStyle.customViews;
 
 import android.content.Context;
 import android.net.Uri;
