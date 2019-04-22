@@ -1,1 +1,1 @@
-include ':app', ':mg_baseModule', ':overall', ':bb_ocr', ':superflyerpage', ':mg_baseLib', ':fontconversion', ':ijkplayer'
+include ':app', ':mg_baseModule', ':overall', ':bb_ocr', ':superflyerpage', ':mg_baseLib', ':fontconversion', ':ijkplayer', ':7zip'

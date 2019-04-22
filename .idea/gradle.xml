@@ -8,6 +8,7 @@
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
+            <option value="$PROJECT_DIR$/7zip" />
             <option value="$PROJECT_DIR$/app" />
             <option value="$PROJECT_DIR$/bb_ocr" />
             <option value="$PROJECT_DIR$/fontconversion" />
