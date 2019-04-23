@@ -1,4 +1,4 @@
-package com.gmself.studio.mg.basemodule.utils;
+package com.gmself.studio.mg.basemodule.utils.dirUtil;
 
 import android.content.Context;
 import android.os.Environment;
@@ -41,7 +41,6 @@ public class DirsTools {
 
     private static String ImageCachePath = null;
     private static String FILE_CACHE_PATH = null;
-
 //	private static String LocalIP = "http://127.0.0.1:8080";
 
     private static boolean isInitialized = false;
@@ -51,6 +50,8 @@ public class DirsTools {
 	private static String rdPath = "rd";
     private static String tempImagePath = "tempPic";
     private static String IMAGE_CACHE_DIR_NAME = "cacheImage";
+    private static String RES_FILE_CACHE_DIR_NAME = "resFile";
+    private static String ANALYSIS_FILE_CACHE_DIR_NAME = "analysisFile";
     private static String KPathSeparated = "/";
 //	private static String NetRoot = null;
 //	private static String ServletURL = null;
@@ -412,7 +413,11 @@ drwx------    4 root     root             0 Apr  7 09:00 secure
     }
 
     public static String GetFileCachePath(){
-        return FILE_CACHE_PATH+KPathSeparated + IMAGE_CACHE_DIR_NAME;
+        return FILE_CACHE_PATH+KPathSeparated + RES_FILE_CACHE_DIR_NAME;
+    }
+
+    public static String GetAnalysisFileCachePath(){
+        return FILE_CACHE_PATH+KPathSeparated + ANALYSIS_FILE_CACHE_DIR_NAME;
     }
 
     public static String GetCacheImage(String fullName){

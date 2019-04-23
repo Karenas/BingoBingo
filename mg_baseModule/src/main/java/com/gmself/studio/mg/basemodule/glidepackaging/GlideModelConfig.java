@@ -9,7 +9,7 @@ import com.bumptech.glide.load.DecodeFormat;
 import com.bumptech.glide.load.engine.cache.ExternalCacheDiskCacheFactory;
 import com.bumptech.glide.load.model.GlideUrl;
 import com.bumptech.glide.module.GlideModule;
-import com.gmself.studio.mg.basemodule.utils.DirsTools;
+import com.gmself.studio.mg.basemodule.utils.dirUtil.DirsTools;
 
 import java.io.InputStream;
 

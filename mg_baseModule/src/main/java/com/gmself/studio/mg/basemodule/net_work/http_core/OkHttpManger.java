@@ -13,7 +13,7 @@ import com.gmself.studio.mg.basemodule.net_work.exception.BingoNetWorkExceptionT
 import com.gmself.studio.mg.basemodule.net_work.http_core.listener.OKHttpListenerDownload;
 import com.gmself.studio.mg.basemodule.net_work.http_core.listener.OkHttpListener;
 import com.gmself.studio.mg.basemodule.net_work.http_message.PostUpJsonBean;
-import com.gmself.studio.mg.basemodule.utils.DirsTools;
+import com.gmself.studio.mg.basemodule.utils.dirUtil.DirsTools;
 
 import java.io.File;
 import java.io.FileNotFoundException;

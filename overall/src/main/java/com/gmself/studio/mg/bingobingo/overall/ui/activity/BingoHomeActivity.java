@@ -13,6 +13,7 @@ import com.gmself.studio.mg.basemodule.base.ui.activity.BaseActivity;
 import com.gmself.studio.mg.basemodule.base.ui.recyclerview.DividerGridItemDecoration;
 import com.gmself.studio.mg.basemodule.mg_dataProcess.MGThreadTool;
 import com.gmself.studio.mg.basemodule.mg_dataProcess.MGThreadTool_processing;
+import com.gmself.studio.mg.basemodule.utils.performanceUtil.PerformanceTools;
 import com.gmself.studio.mg.bingobingo.overall.R;
 import com.gmself.studio.mg.bingobingo.overall.entity.EntityHomeRvItem;
 import com.gmself.studio.mg.bingobingo.overall.module.weather.WeatherMaker;
@@ -53,6 +54,7 @@ public class BingoHomeActivity extends BaseActivity{
 
     @Override
     public void initView() {
+//        PerformanceTools.getInstance().StartMethodTracing("bingoHome");
         mRecyclerView = findViewById(R.id.overall_home_rv);
         weatherAnim_surface_view = findViewById(R.id.overall_home_weather_sv);
 
@@ -67,6 +69,7 @@ public class BingoHomeActivity extends BaseActivity{
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
 
         mRecyclerView.setAdapter(adapter);
+//        PerformanceTools.getInstance().EndMethodTracing();
     }
 
     @Override

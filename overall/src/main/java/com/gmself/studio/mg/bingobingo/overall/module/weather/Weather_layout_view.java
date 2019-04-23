@@ -9,7 +9,6 @@ import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.gmself.studio.mg.basemodule.utils.UITool;
 import com.gmself.studio.mg.basemodule.utils.dateUtil.DateStyles;
 import com.gmself.studio.mg.basemodule.utils.dateUtil.DateTool;
 import com.gmself.studio.mg.bingobingo.overall.R;

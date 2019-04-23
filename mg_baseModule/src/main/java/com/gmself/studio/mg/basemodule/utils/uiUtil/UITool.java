@@ -1,4 +1,4 @@
-package com.gmself.studio.mg.basemodule.utils;
+package com.gmself.studio.mg.basemodule.utils.uiUtil;
 
 import android.content.Context;
 
