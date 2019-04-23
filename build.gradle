@@ -30,6 +30,7 @@ allprojects {
             url 'http://maven.aliyun.com/nexus/content/repositories/releases/'
         }
     }
+
 }
 
 task clean(type: Delete) {

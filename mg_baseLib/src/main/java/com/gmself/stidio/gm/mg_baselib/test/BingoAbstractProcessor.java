@@ -106,7 +106,6 @@ public class BingoAbstractProcessor extends AbstractProcessor {
                 JavaFileObject javaFileObject = filer.createSourceFile(newActivityBinder);
                 writer = javaFileObject.openWriter();
 //                String activitySimpleName = cacheElements.get(0).getEnclosingElement().getSimpleName().toString();
-                //写入文件中
                 writer.write("package "+packageName+";");
                 writer.write("\n");
                 writer.write("import "+packageName+".ViewBinder;");

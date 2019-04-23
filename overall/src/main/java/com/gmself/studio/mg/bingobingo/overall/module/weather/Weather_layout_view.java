@@ -1,6 +1,7 @@
 package com.gmself.studio.mg.bingobingo.overall.module.weather;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.util.AttributeSet;
@@ -9,6 +10,7 @@ import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.gmself.studio.mg.basemodule.base.ui.activity.FlutterBaseActivity;
 import com.gmself.studio.mg.basemodule.utils.dateUtil.DateStyles;
 import com.gmself.studio.mg.basemodule.utils.dateUtil.DateTool;
 import com.gmself.studio.mg.bingobingo.overall.R;
@@ -56,6 +58,13 @@ public class Weather_layout_view extends RelativeLayout{
         setBackground(ContextCompat.getDrawable(context, R.drawable.background_overall_weather_home));
         targetView = LayoutInflater.from(context).inflate(R.layout.layout_overall_weather, this);
         initViews(targetView);
+
+        targetView.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                jumpToWeatherInfoFlutterActivity();
+            }
+        });
     }
 
     private void initViews(View rootView){
@@ -73,6 +82,11 @@ public class Weather_layout_view extends RelativeLayout{
             date = DateTool.getStringDate(d, DateStyles.YYYY_MM_DD_CN)+" 星期"+DateTool.getDayOfWeek_str(d);
         }
         this.date_tv.setText(date);
+    }
+
+    private void jumpToWeatherInfoFlutterActivity(){
+        Intent intent = new Intent(context, FlutterBaseActivity.class);
+        context.startActivity(intent);
     }
 
     public void setLocation(String location) {

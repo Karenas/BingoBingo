@@ -13,6 +13,8 @@
         <meta-data
             android:name="com.gmself.studio.mg.basemodule.glidepackaging.GlideModelConfig"
             android:value="GlideModule"/>
+
+        <activity android:name=".base.ui.activity.FlutterBaseActivity"/>
     </application>
 
 </manifest>
