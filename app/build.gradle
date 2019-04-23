@@ -52,6 +52,8 @@ dependencies {
     implementation project(':bb_ocr')
     implementation project(':superflyerpage')
     implementation project(':fontconversion')
+
+    implementation project(':flutter')
 }
 
 configurations.all {

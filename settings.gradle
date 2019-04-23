@@ -1,1 +1,7 @@
 include ':app', ':mg_baseModule', ':overall', ':bb_ocr', ':superflyerpage', ':mg_baseLib', ':fontconversion', ':ijkplayer', ':7zip'
+
+setBinding(new Binding([gradle: this]))
+evaluate(new File(
+        settingsDir,
+        'weather_flutter\\.android\\include_flutter.groovy'
+))

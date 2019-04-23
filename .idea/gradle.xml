@@ -17,6 +17,7 @@
             <option value="$PROJECT_DIR$/mg_baseModule" />
             <option value="$PROJECT_DIR$/overall" />
             <option value="$PROJECT_DIR$/superflyerpage" />
+            <option value="$PROJECT_DIR$/weather_flutter/.android/Flutter" />
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />
