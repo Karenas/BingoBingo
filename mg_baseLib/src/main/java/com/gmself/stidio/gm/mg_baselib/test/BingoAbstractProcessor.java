@@ -28,7 +28,8 @@ import javax.tools.JavaFileObject;
  * Created by guomeng on 3/23.
  */
 
-@AutoService(Process.class) //拥有注解处理器能力
+@AutoService(Process.class)
+/**拥有注解处理器能力*/
 public class BingoAbstractProcessor extends AbstractProcessor {
 
     @Override
@@ -38,7 +39,7 @@ public class BingoAbstractProcessor extends AbstractProcessor {
         return types;
     }
 
-    //添加JDK的支持版本
+    //增加JDK 的支持版本
     @Override
     public SourceVersion getSupportedSourceVersion() {
         return SourceVersion.latestSupported();

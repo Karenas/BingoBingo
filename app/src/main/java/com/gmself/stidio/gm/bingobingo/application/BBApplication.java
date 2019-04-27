@@ -13,7 +13,7 @@ import com.gmself.studio.mg.basemodule.net_work.http_core.OkHttpManger;
 
 public class BBApplication extends Application {
 
-    private final boolean isRunDebug = false;
+    private final boolean isRunDebug = true;
 
 
 

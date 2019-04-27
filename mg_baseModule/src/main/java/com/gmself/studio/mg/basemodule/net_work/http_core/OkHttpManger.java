@@ -132,7 +132,10 @@ public class OkHttpManger {
         return PortUrl.getUrl(httpPortType);
     }
 
-    public void downloadFileAsyHttp(Context ctx, String url, String saveFileName, OKHttpListenerDownload listener){
+    /**
+     * @param saveFileName 文件名称，限定默认存在缓存目录下 @link DirsTools.GetFileCachePath
+     * */
+    public void downloadFileAsyn(Context ctx, String url, String saveFileName, OKHttpListenerDownload listener){
         assert TextUtils.isEmpty(saveFileName);
 
         checkCachePath();
@@ -143,8 +146,9 @@ public class OkHttpManger {
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
-        if (null!= file){
-            httpInitiator.downloadFileInNewThread(ctx, url, file, listener);
+
+        if (null != file){
+            httpInitiator.downloadFileAsyn(ctx, url, file, 0, listener);
         }else {
             listener.onError(new BingoNetWorkException(BingoNetWorkExceptionType.IO_ERROR, "Download Local FileNotFound:"+saveFileName));
         }

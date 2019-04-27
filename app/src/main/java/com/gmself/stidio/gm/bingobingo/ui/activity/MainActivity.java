@@ -2,8 +2,10 @@ package com.gmself.stidio.gm.bingobingo.ui.activity;
 
 import android.Manifest;
 import android.content.Intent;
+import android.support.annotation.MainThread;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.alibaba.fastjson.JSONObject;
 import com.gmself.stidio.gm.bingobingo.Port_test;
@@ -13,6 +15,9 @@ import com.gmself.studio.mg.basemodule.arouter.Manager_RouterM;
 import com.gmself.studio.mg.basemodule.entity.LocationBasic;
 import com.gmself.studio.mg.basemodule.entity.User;
 import com.gmself.studio.mg.basemodule.environment.DeviceInfo;
+import com.gmself.studio.mg.basemodule.log_tool.Logger;
+import com.gmself.studio.mg.basemodule.net_work.http_core.OkHttpManger;
+import com.gmself.studio.mg.basemodule.net_work.http_core.listener.OKHttpListenerDownload;
 import com.gmself.studio.mg.basemodule.net_work.http_core.listener.OKHttpListenerJsonObj;
 import com.gmself.studio.mg.basemodule.service.ServiceCallBack;
 import com.gmself.studio.mg.basemodule.service.ServiceCallBackManager;
@@ -46,7 +51,35 @@ public class MainActivity extends BaseActivity {
         open_tv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Manager_RouterM.getInstance().router_goto(ENUM_RouterE.ACTIVITY_OVERALL_HOME);
+//                Manager_RouterM.getInstance().router_goto(ENUM_RouterE.ACTIVITY_OVERALL_HOME);
+
+                OkHttpManger.getInstance().downloadFileAsyn(MainActivity.this,
+                        "http://tcy.198424.com/aejiaobengifgunzuixin.zip",
+                        "bingo.zip",
+                        new OKHttpListenerDownload() {
+                            @Override
+                            public void onSuccess() {
+
+                            }
+
+                            @Override
+                            public void onProgress(float percent, long completionSize) {
+                                Logger.log(Logger.Type.FILE, " -----------  "+ percent+"  -----------");
+                                Toast.makeText(MainActivity.this, " -----------  "+ percent+"  -----------", Toast.LENGTH_SHORT).show();
+                            }
+
+                            @Override
+                            public void onError(BingoNetWorkException resultCode) {
+
+                            }
+
+                            @Override
+                            public void onFinally() {
+                                Toast.makeText(MainActivity.this, "完成", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                );
+
             }
         });
 
@@ -54,6 +87,8 @@ public class MainActivity extends BaseActivity {
 
     @Override
     public void setFunction() {
+
+        BaseConfig.getInstance().initData(this);
 
         requestPermission(new String[]{Manifest.permission.READ_PHONE_STATE}, PermissionTag.READ_PHONE_STATE);
         requestPermission(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, PermissionTag.WRITE_EXTERNAL_STORAGE);
@@ -119,7 +154,7 @@ public class MainActivity extends BaseActivity {
 
         }else if (requestCode == PermissionTag.ACCESS_FINE_LOCATION ||
                 requestCode == PermissionTag.ACCESS_COARSE_LOCATION){
-            startLocationService();
+//            startLocationService();
         }
     }
 

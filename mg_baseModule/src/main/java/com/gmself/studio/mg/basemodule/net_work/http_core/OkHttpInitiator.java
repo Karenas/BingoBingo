@@ -475,9 +475,9 @@ public class OkHttpInitiator {
     }
 
 
-    public void downloadFileInNewThread(final Context ctx, String url, RandomAccessFile file, final OKHttpListenerDownload listener) {
+    public void downloadFileAsyn(final Context ctx, String url, RandomAccessFile file, long totalSize, final OKHttpListenerDownload listener) {
         Logger.log(Logger.Type.DEBUG, "  下载 downloadFileInNewThread");
-        getObservableDownloadFile(url, file).subscribe(new Subscriber<DownloadProgress>() {
+        getObservableDownloadFile(url, file, totalSize).subscribeOn(Schedulers.newThread()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<DownloadProgress>() {
             @Override
             public void onCompleted() {
                 listener.onFinally();
@@ -489,7 +489,7 @@ public class OkHttpInitiator {
 
             @Override
             public void onNext(DownloadProgress downloadProgress) {
-
+                listener.onProgress(downloadProgress.getPercent(), downloadProgress.getCompletionSize());
             }
 //
 //            @Override
@@ -499,10 +499,11 @@ public class OkHttpInitiator {
         });
     }
 
-    private Observable getObservableDownloadFile(final String url, final RandomAccessFile file) {
+    private Observable getObservableDownloadFile(final String url, final RandomAccessFile file, final long totalSize) {
         Observable observable = Observable.create(new Observable.OnSubscribe<DownloadProgress>() {
             @Override
             public void call(final Subscriber<? super DownloadProgress> subscriber) {
+//                subscriber.onNext(new DownloadProgress());
                 if (null == mOkHttpClient){
                     Logger.logException(new Exception("OkHttpClient not create! please check it in OKHttpManger.initHttp() "), "port url= "+url);
                     subscriber.onError(new BingoNetWorkException(BingoNetWorkExceptionType.INIT_ERROR, "OkHttpClient not create! please check it in OKHttpManger.initHttp() "));
@@ -519,7 +520,7 @@ public class OkHttpInitiator {
 
                 // 获得本地下载的文件大小
                 try {
-                    final long[] totalSize = {0};
+//                    long totalSize =  completeSize;
                     final long fileLength = file.length();
 
 //                    if (fileLength > 0 && totalSize == fileLength) {
@@ -546,12 +547,17 @@ public class OkHttpInitiator {
                                         ResponseBody body = response.body();
                                         // 获取文件总长度
                                         final long contentLength = body.contentLength();
-                                        if (totalSize[0] <= 0) {
-                                            totalSize[0] = contentLength;
+
+                                        long divisor;
+
+                                        if (totalSize <= 0) {
+                                            divisor = contentLength;
+                                        }else {
+                                            divisor = totalSize;
                                         }
                                         //以流的方式进行读取
                                         InputStream inputStream = body.byteStream();
-                                        byte[] buffer = new byte[2048];
+                                        byte[] buffer = new byte[20480];
                                         int len = 0;
                                         long sum = fileLength;
                                         float percent = 0;
@@ -560,87 +566,26 @@ public class OkHttpInitiator {
                                         while ((len = inputStream.read(buffer)) != -1){
                                             sum+=len;
                                             file.write(buffer, 0, len);
-                                            percent = (float) (sum * 100 / totalSize[0]);
+                                            percent = (float) (sum * 100 / divisor);
                                             downloadProgress.setPercent(percent);
                                             downloadProgress.setCompletionSize(sum);
                                             subscriber.onNext(downloadProgress);
                                         }
                                         inputStream.close();
                                     }
+                                    subscriber.onCompleted();
                                 }
                             });
                 } catch (IOException e) {
                     e.printStackTrace();
-                }finally {
                     subscriber.onCompleted();
+                }finally {
+
                 }
             }
         });
         return observable;
     }
-
-//    private Observable getObservableDownloadFile(final String url, final File file) {
-//        Observable observable = Observable.create(new Observable.OnSubscribe<String>() {
-//            @Override
-//            public void call(final Subscriber<? super String> subscriber) {
-//                if (null == mOkHttpClient){
-//                    Logger.logException(new Exception("OkHttpClient not create! please check it in OKHttpManger.initHttp() "), "port url= "+url);
-//                    subscriber.onError(new BingoNetWorkException(BingoNetWorkExceptionType.INIT_ERROR, "OkHttpClient not create! please check it in OKHttpManger.initHttp() "));
-//                    subscriber.onCompleted();
-//                    return;
-//                }
-//
-//                // 父目录是否存在
-//                File parent = file.getParentFile();
-//                if (!parent.exists()) {
-//                    parent.mkdir();
-//                }
-//                // 文件是否存在
-//                if (!file.exists()) {
-//                    try {
-//                        file.createNewFile();
-//                    } catch (IOException e) {
-//                        e.printStackTrace();
-//                    }
-//                }
-//                Request request=new Request.Builder().url(url).get().build();
-//                mOkHttpClient.newCall(request)
-//                        .enqueue(new Callback() {
-//                            @Override
-//                            public void onFailure(Call call, final IOException e) {
-//                                subscriber.onError(new BingoNetWorkException(BingoNetWorkExceptionType.IO_ERROR, "port_down_curThread url= "+url));
-//                            }
-//
-//                            @Override
-//                            public void onResponse(Call call, Response response) throws IOException {
-//                                if (response.isSuccessful()) {
-//                                    ResponseBody body = response.body();
-//                                    // 获取文件总长度
-//                                    final long totalLength = body.contentLength();
-//                                    //以流的方式进行读取
-//                                    InputStream inputStream = body.byteStream();
-//                                    FileOutputStream outputStream = new FileOutputStream(file);
-//                                    byte[] buffer = new byte[2048];
-//                                    int len = 0;
-//                                    int num = 0;
-//                                    while ((len = inputStream.read(buffer)) != -1){
-//                                        num+=len;
-//                                        outputStream.write(buffer,0,len);
-//                                        final int finalNum = num;
-//                                    }
-//                                    //读取完关闭流
-//                                    outputStream.flush();
-//                                    outputStream.close();
-//                                    inputStream.close();
-//                                    subscriber.onNext("finish");
-//                                }
-//                            }
-//                        });
-//
-//            }
-//        });
-//        return observable;
-//    }
 
     class DownloadProgress{
         private float percent;
