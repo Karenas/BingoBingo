@@ -9,12 +9,7 @@ public class ZipProcess {
     8 Not enough memory for operation
     255 User stopped the process
      */
-    private static final int RET_SUCCESS = 0;
-    private static final int RET_WARNING = 1;
-    private static final int RET_FAULT = 2;
-    private static final int RET_COMMAND = 7;
-    private static final int RET_MEMORY = 8;
-    private static final int RET_USER_STOP = 255;
+
 
 
 }

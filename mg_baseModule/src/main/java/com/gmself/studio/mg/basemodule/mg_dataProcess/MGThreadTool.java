@@ -27,6 +27,9 @@ public class MGThreadTool {
         return ourInstance;
     }
 
+    /**
+     * 结果回调并非在当前线程，而是主线程执行
+     * */
     public<DataProcess extends MGThreadTool_processing> void doProcess(DataProcess dataProcess){
         ThreadPoolManager.getInstance().execute(new DataProcessTask(dataProcess));
     }
