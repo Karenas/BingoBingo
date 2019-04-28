@@ -35,6 +35,8 @@ public class LocationService extends IntentService {
 
     private int interval = 1000;
 
+    private boolean survive = true;
+
     public LocationService() {
         super("LocationService");
     }
@@ -50,14 +52,14 @@ public class LocationService extends IntentService {
 
     @Override
     protected void onHandleIntent(@Nullable Intent intent) {
-        while (true){
+        while (survive){
             SystemClock.sleep(interval);
             getLocation();
         }
     }
 
     private void getLocation(){
-        LocationInfo.getInstance(this).getLngAndLat(new LocationInfo.OnLocationResultListener() {
+        boolean r = LocationInfo.getInstance(this).getLngAndLat(new LocationInfo.OnLocationResultListener() {
             @Override
             public void onLocationResult(Location location) {
                 if (null!=location){
@@ -73,6 +75,9 @@ public class LocationService extends IntentService {
             }
         }, null);
 
+        if (!r){
+            survive = false;
+        }
     }
 
     private boolean checkLocation(Location location){

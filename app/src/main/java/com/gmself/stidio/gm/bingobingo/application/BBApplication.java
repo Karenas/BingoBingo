@@ -22,11 +22,12 @@ public class BBApplication extends Application {
         super.onCreate();
 
         BaseConfig.getInstance().setRunDebug(isRunDebug);
+        BaseConfig.getInstance().initData(this);
 
         OkHttpManger.getInstance().initHttp(this);
 
         initARouter();
-        initLogger();
+
     }
 
     @Override
@@ -44,9 +45,7 @@ public class BBApplication extends Application {
         ARouter.init(this);
     }
 
-    private void initLogger(){
-        Logger.init(this);
-    }
+
 
 
 }

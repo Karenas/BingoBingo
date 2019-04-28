@@ -6,6 +6,9 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
+
+import com.bumptech.glide.Glide;
 
 import io.flutter.facade.Flutter;
 import io.flutter.view.FlutterView;
@@ -23,6 +26,7 @@ public class FlutterBaseActivity extends AppCompatActivity {
         getSupportActionBar().hide();
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
+        Glide.with(this).load("").asBitmap().into(new ImageView(this));
 
         FrameLayout frameLayout = new FrameLayout(this);
         FlutterView flutterView = Flutter.createView(this, getLifecycle(), "route1");

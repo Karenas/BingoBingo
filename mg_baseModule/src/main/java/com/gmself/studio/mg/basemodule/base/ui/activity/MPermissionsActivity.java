@@ -21,7 +21,7 @@ public class MPermissionsActivity extends AppCompatActivity {
     private int REQUEST_CODE_PERMISSION = 0x00099;
     /**
      * 请求权限
-     *
+     * 需成链式调用，不可同时调用两次
      * @param permissions 请求的权限
      * @param requestCode 请求权限的请求码
      */

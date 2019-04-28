@@ -103,7 +103,9 @@ public class WeatherMaker implements LifeCycleListener {
 
     @Override
     public void onStart() {
-        updateUI();
+        if (dataBox!=null){
+            updateUI();
+        }
     }
 
     @Override

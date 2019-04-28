@@ -3,6 +3,7 @@ package com.gmself.studio.mg.basemodule;
 import android.content.Context;
 
 import com.gmself.studio.mg.basemodule.environment.DeviceInfo;
+import com.gmself.studio.mg.basemodule.log_tool.Logger;
 import com.gmself.studio.mg.basemodule.utils.dirUtil.DirsTools;
 
 /**
@@ -27,16 +28,19 @@ public class BaseConfig {
     }
 
     public void initData(Context context){
-        initDirPath(context);
-        initDeviceInfo(context);
+        initDirPath(context.getApplicationContext());
+        initLogger(context.getApplicationContext());
     }
 
-    private void initDeviceInfo(Context context){
-        DeviceInfo.getInstance().init(context);
+    public void initDeviceInfo(Context context){
+        DeviceInfo.getInstance().init(context.getApplicationContext());
     }
 
     private void initDirPath(Context context){
         DirsTools.init(context, isRunDebug);
     }
 
+    private void initLogger(Context context){
+        Logger.init(context);
+    }
 }

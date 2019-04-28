@@ -51,35 +51,7 @@ public class MainActivity extends BaseActivity {
         open_tv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                Manager_RouterM.getInstance().router_goto(ENUM_RouterE.ACTIVITY_OVERALL_HOME);
-
-                OkHttpManger.getInstance().downloadFileAsyn(MainActivity.this,
-                        "http://tcy.198424.com/aejiaobengifgunzuixin.zip",
-                        "bingo.zip",
-                        new OKHttpListenerDownload() {
-                            @Override
-                            public void onSuccess() {
-
-                            }
-
-                            @Override
-                            public void onProgress(float percent, long completionSize) {
-                                Logger.log(Logger.Type.FILE, " -----------  "+ percent+"  -----------");
-                                Toast.makeText(MainActivity.this, " -----------  "+ percent+"  -----------", Toast.LENGTH_SHORT).show();
-                            }
-
-                            @Override
-                            public void onError(BingoNetWorkException resultCode) {
-
-                            }
-
-                            @Override
-                            public void onFinally() {
-                                Toast.makeText(MainActivity.this, "完成", Toast.LENGTH_SHORT).show();
-                            }
-                        }
-                );
-
+                Manager_RouterM.getInstance().router_goto(ENUM_RouterE.ACTIVITY_OVERALL_HOME);
             }
         });
 
@@ -88,12 +60,10 @@ public class MainActivity extends BaseActivity {
     @Override
     public void setFunction() {
 
-        BaseConfig.getInstance().initData(this);
-
         requestPermission(new String[]{Manifest.permission.READ_PHONE_STATE}, PermissionTag.READ_PHONE_STATE);
-        requestPermission(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, PermissionTag.WRITE_EXTERNAL_STORAGE);
-        requestPermission(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, PermissionTag.ACCESS_FINE_LOCATION);
-        requestPermission(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, PermissionTag.ACCESS_COARSE_LOCATION);
+//        requestPermission(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, PermissionTag.WRITE_EXTERNAL_STORAGE);
+//        requestPermission(new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, PermissionTag.ACCESS_LOCATION);
+//        requestPermission(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, PermissionTag.ACCESS_COARSE_LOCATION);
 
 
 //        Manager_RouterM.getInstance().router_goto(ENUM_RouterE.ACTIVITY_OVERALL_HOME);
@@ -148,13 +118,13 @@ public class MainActivity extends BaseActivity {
     public void permissionSuccess(int requestCode) {
         super.permissionSuccess(requestCode);
         if (requestCode == PermissionTag.READ_PHONE_STATE){
-            BaseConfig.getInstance().initData(this);
+            BaseConfig.getInstance().initDeviceInfo(this);
             registerGetCityIDListener();
+            requestPermission(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, PermissionTag.WRITE_EXTERNAL_STORAGE);
         }else if (requestCode == PermissionTag.WRITE_EXTERNAL_STORAGE){
-
-        }else if (requestCode == PermissionTag.ACCESS_FINE_LOCATION ||
-                requestCode == PermissionTag.ACCESS_COARSE_LOCATION){
-//            startLocationService();
+            requestPermission(new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, PermissionTag.ACCESS_LOCATION);
+        }else if (requestCode == PermissionTag.ACCESS_LOCATION){
+            startLocationService();
         }
     }
 
@@ -165,9 +135,21 @@ public class MainActivity extends BaseActivity {
     @Override
     public void permissionFail(int requestCode) {
         super.permissionFail(requestCode);
-        if (requestCode == PermissionTag.READ_PHONE_STATE){
 
+        if (requestCode == PermissionTag.READ_PHONE_STATE){
+//            BaseConfig.getInstance().initDeviceInfo(this);
+//            registerGetCityIDListener();
+            requestPermission(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, PermissionTag.WRITE_EXTERNAL_STORAGE);
+        }else if (requestCode == PermissionTag.WRITE_EXTERNAL_STORAGE){
+            requestPermission(new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, PermissionTag.ACCESS_LOCATION);
+        }else if (requestCode == PermissionTag.ACCESS_LOCATION){
+//            startLocationService();
         }
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
     }
 
     private void startLocationService(){

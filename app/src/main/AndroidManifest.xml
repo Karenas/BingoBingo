@@ -34,7 +34,8 @@
             </intent-filter>
         </activity>
 
-        <service android:name="com.gmself.studio.mg.basemodule.service.moduleService.LocationService" />
+        <service android:name="com.gmself.studio.mg.basemodule.service.moduleService.LocationService"
+            android:launchMode="singleTask"/>
 
     </application>
 

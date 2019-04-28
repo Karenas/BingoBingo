@@ -11,4 +11,5 @@ public class PermissionTag {
     public static final int WRITE_EXTERNAL_STORAGE = 102;
     public static final int ACCESS_FINE_LOCATION = 103;
     public static final int ACCESS_COARSE_LOCATION = 104;
+    public static final int ACCESS_LOCATION = 105;
 }

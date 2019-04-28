@@ -13,6 +13,8 @@ import android.support.v4.app.ActivityCompat;
 
 import java.util.List;
 
+import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
+
 /**
  * Created by guomeng on 4/5.
  */
@@ -22,6 +24,7 @@ public class LocationInfo {
     private static LocationInfo instance;
     private Context mContext;
     private LocationManager locationManager;
+    private boolean couldJumpToSetting = true;
 
     private LocationInfo(Context context) {
         this.mContext = context;
@@ -39,7 +42,7 @@ public class LocationInfo {
      *
      * @return
      */
-    public String getLngAndLat(OnLocationResultListener onLocationResultListener, OnLocationChangeListener onLocationChangeListener) {
+    public boolean getLngAndLat(OnLocationResultListener onLocationResultListener, OnLocationChangeListener onLocationChangeListener) {
 //        double latitude = 0.0;
 //        double longitude = 0.0;
 
@@ -47,7 +50,7 @@ public class LocationInfo {
         mOnLocationChangeListener = onLocationChangeListener;
 
         String locationProvider = null;
-        locationManager = (LocationManager) mContext.getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
+        locationManager = (LocationManager) mContext.getSystemService(Context.LOCATION_SERVICE);
         //获取所有可用的位置提供器
         List<String> providers = locationManager.getProviders(true);
 
@@ -58,10 +61,19 @@ public class LocationInfo {
             //如果是Network
             locationProvider = LocationManager.NETWORK_PROVIDER;
         } else {
-            Intent i = new Intent();
-            i.setAction(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-            mContext.startActivity(i);
-            return null;
+            if (couldJumpToSetting){
+                Intent i = new Intent();
+                i.setAction(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                i.setFlags(FLAG_ACTIVITY_NEW_TASK);
+                mContext.startActivity(i);
+                couldJumpToSetting = false;
+            }
+
+            if (!couldJumpToSetting){
+                return false;
+            }else {
+                return true;
+            }
         }
 
         //获取Location
@@ -79,7 +91,7 @@ public class LocationInfo {
                 locationManager.requestLocationUpdates(locationProvider, 3000, 1, locationListener);
             }
         }
-        return null;
+        return true;
     }
 
 
