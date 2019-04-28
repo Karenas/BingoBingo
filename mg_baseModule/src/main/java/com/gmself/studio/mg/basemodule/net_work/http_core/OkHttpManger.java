@@ -8,6 +8,9 @@ import com.gmself.studio.mg.basemodule.log_tool.Logger;
 import com.gmself.studio.mg.basemodule.net_work.constant.HttpPortType;
 import com.gmself.studio.mg.basemodule.net_work.constant.HttpPortUpMessageType;
 import com.gmself.studio.mg.basemodule.net_work.constant.PortUrl;
+import com.gmself.studio.mg.basemodule.net_work.download.DownloadHandler;
+import com.gmself.studio.mg.basemodule.net_work.download.DownloadSeed;
+import com.gmself.studio.mg.basemodule.net_work.download.DownloadTask;
 import com.gmself.studio.mg.basemodule.net_work.exception.BingoNetWorkException;
 import com.gmself.studio.mg.basemodule.net_work.exception.BingoNetWorkExceptionType;
 import com.gmself.studio.mg.basemodule.net_work.http_core.listener.OKHttpListenerDownload;
@@ -17,6 +20,7 @@ import com.gmself.studio.mg.basemodule.utils.dirUtil.DirsTools;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.util.Map;
 
@@ -90,28 +94,28 @@ public class OkHttpManger {
         httpInitiator = new OkHttpInitiator(mContext);
     }
 
-    public void doGet(Context ctx, String url, Map<HttpPortUpMessageType, String> parameters, OkHttpListener listener){
+    public void doGet(String url, Map<HttpPortUpMessageType, String> parameters, OkHttpListener listener){
         Logger.log(Logger.Type.NET_PORT, new String[]{"port_up _get_ url= "+url});
 
-        httpInitiator.getAsynHttp(ctx, url, parameters, listener);
+        httpInitiator.getAsynHttp(url, parameters, listener);
     }
 
-    public void doPostJson(Context ctx, PostUpJsonBean jsonBean, OkHttpListener listener){
+    public void doPostJson(PostUpJsonBean jsonBean, OkHttpListener listener){
         String param = makeUpMessageToJson(jsonBean);
         String url = jsonBean.getUrl();
 
         Logger.log(Logger.Type.NET_PORT, new String[]{"port_up url= "+url, "port_up param= "+param});
 
-        httpInitiator.postAsynHttp(ctx, url, param, listener);
+        httpInitiator.postAsynHttp(url, param, listener);
     }
 
-    public void doPostJsonInCurrentThread(Context ctx, PostUpJsonBean jsonBean, OkHttpListener listener){
+    public void doPostJsonInCurrentThread(PostUpJsonBean jsonBean, OkHttpListener listener){
         String param = makeUpMessageToJson(jsonBean);
         String url = jsonBean.getUrl();
 
         Logger.log(Logger.Type.NET_PORT, new String[]{"port_up_curThead url= "+url, "port_up_curThead param= "+param});
 
-        httpInitiator.postCurrentThreadHttp(ctx, url, param, listener);
+        httpInitiator.postCurrentThreadHttp(url, param, listener);
     }
 
     public void uploadImageAsynHttp(String filePath, OkHttpListener listener){
@@ -135,30 +139,19 @@ public class OkHttpManger {
     /**
      * @param saveFileName 文件名称，限定默认存在缓存目录下 @link DirsTools.GetFileCachePath
      * */
-    public void downloadFileAsyn(Context ctx, String url, String saveFileName, OKHttpListenerDownload listener){
+    public DownloadTask makeDownloadTask(String url, String saveFileName, DownloadHandler downloadHandler) throws FileNotFoundException {
         assert TextUtils.isEmpty(saveFileName);
 
-        checkCachePath();
-        File downFile = new File(DirsTools.GetFileCachePath(), saveFileName);
-        RandomAccessFile file = null;
-        try {
-            file = new RandomAccessFile(downFile.getAbsoluteFile(), "rwd");
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
+        DownloadTask downloadTask = new DownloadTask();
+        DownloadSeed downloadSeed = new DownloadSeed(url, saveFileName, 0);
+        downloadTask.setHandler(downloadHandler);
+        downloadTask.setSeed(downloadSeed);
 
-        if (null != file){
-            httpInitiator.downloadFileAsyn(ctx, url, file, 0, listener);
-        }else {
-            listener.onError(new BingoNetWorkException(BingoNetWorkExceptionType.IO_ERROR, "Download Local FileNotFound:"+saveFileName));
-        }
-
+        return downloadTask;
     }
 
-    private void checkCachePath(){
-        File file = new File(DirsTools.GetFileCachePath());
-        if (!file.exists()) {
-            file.mkdirs();
-        }
+    public void downloadFileAsyn(DownloadTask downloadTask){
+        httpInitiator.downloadFileAsyn(downloadTask);
     }
+
 }

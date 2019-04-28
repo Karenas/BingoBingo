@@ -60,10 +60,8 @@ public class MainActivity extends BaseActivity {
     @Override
     public void setFunction() {
 
-        requestPermission(new String[]{Manifest.permission.READ_PHONE_STATE}, PermissionTag.READ_PHONE_STATE);
-//        requestPermission(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, PermissionTag.WRITE_EXTERNAL_STORAGE);
-//        requestPermission(new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, PermissionTag.ACCESS_LOCATION);
-//        requestPermission(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, PermissionTag.ACCESS_COARSE_LOCATION);
+//        requestPermission(new String[]{Manifest.permission.READ_PHONE_STATE}, PermissionTag.READ_PHONE_STATE);
+        requestPermission(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, PermissionTag.WRITE_EXTERNAL_STORAGE);
 
 
 //        Manager_RouterM.getInstance().router_goto(ENUM_RouterE.ACTIVITY_OVERALL_HOME);
@@ -120,9 +118,9 @@ public class MainActivity extends BaseActivity {
         if (requestCode == PermissionTag.READ_PHONE_STATE){
             BaseConfig.getInstance().initDeviceInfo(this);
             registerGetCityIDListener();
-            requestPermission(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, PermissionTag.WRITE_EXTERNAL_STORAGE);
-        }else if (requestCode == PermissionTag.WRITE_EXTERNAL_STORAGE){
             requestPermission(new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, PermissionTag.ACCESS_LOCATION);
+        }else if (requestCode == PermissionTag.WRITE_EXTERNAL_STORAGE){
+            requestPermission(new String[]{Manifest.permission.READ_PHONE_STATE}, PermissionTag.READ_PHONE_STATE);
         }else if (requestCode == PermissionTag.ACCESS_LOCATION){
             startLocationService();
         }
@@ -137,13 +135,10 @@ public class MainActivity extends BaseActivity {
         super.permissionFail(requestCode);
 
         if (requestCode == PermissionTag.READ_PHONE_STATE){
-//            BaseConfig.getInstance().initDeviceInfo(this);
-//            registerGetCityIDListener();
-            requestPermission(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, PermissionTag.WRITE_EXTERNAL_STORAGE);
-        }else if (requestCode == PermissionTag.WRITE_EXTERNAL_STORAGE){
             requestPermission(new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, PermissionTag.ACCESS_LOCATION);
+        }else if (requestCode == PermissionTag.WRITE_EXTERNAL_STORAGE){
+            requestPermission(new String[]{Manifest.permission.READ_PHONE_STATE}, PermissionTag.READ_PHONE_STATE);
         }else if (requestCode == PermissionTag.ACCESS_LOCATION){
-//            startLocationService();
         }
     }
 

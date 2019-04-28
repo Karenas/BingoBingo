@@ -9,6 +9,9 @@ import com.gmself.studio.mg.basemodule.net_work.HttpConfig;
 import com.gmself.studio.mg.basemodule.net_work.constant.HttpPortType;
 import com.gmself.studio.mg.basemodule.net_work.constant.HttpPortUpMessageType;
 import com.gmself.studio.mg.basemodule.net_work.constant.PortUrl;
+import com.gmself.studio.mg.basemodule.net_work.download.DownloadProgress;
+import com.gmself.studio.mg.basemodule.net_work.download.DownloadSeed;
+import com.gmself.studio.mg.basemodule.net_work.download.DownloadTask;
 import com.gmself.studio.mg.basemodule.net_work.exception.BingoNetWorkException;
 import com.gmself.studio.mg.basemodule.net_work.exception.BingoNetWorkExceptionType;
 import com.gmself.studio.mg.basemodule.net_work.http_core.listener.OKHttpListenerDownload;
@@ -229,7 +232,7 @@ public class OkHttpInitiator {
 
     //---------------------------------------------------------------------------------
 
-    public void getAsynHttp(final Context ctx, String url, Map<HttpPortUpMessageType, String> parameters, final OkHttpListener listener){
+    public void getAsynHttp(String url, Map<HttpPortUpMessageType, String> parameters, final OkHttpListener listener){
         getObservableGetHttp(url, parameters).subscribeOn(Schedulers.io()).observeOn(Schedulers.immediate()).subscribe(new Subscriber<String>() {
             @Override
             public void onCompleted() {
@@ -237,7 +240,7 @@ public class OkHttpInitiator {
             }
             @Override
             public void onError(Throwable e) {
-                PublicInterceptionNoHttp200(ctx, (BingoNetWorkException) e, listener);
+                PublicInterceptionNoHttp200((BingoNetWorkException) e, listener);
             }
             @Override
             public void onNext(String s) {
@@ -295,7 +298,7 @@ public class OkHttpInitiator {
     }
 
 
-    public void postAsynHttp(final Context ctx, String url, String arg, final OkHttpListener listener) {
+    public void postAsynHttp(String url, String arg, final OkHttpListener listener) {
         getObservablePostHttp(url, arg).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<String>() {
             @Override
             public void onCompleted() {
@@ -304,7 +307,7 @@ public class OkHttpInitiator {
             }
             @Override
             public void onError(Throwable e) {
-                PublicInterceptionNoHttp200(ctx, (BingoNetWorkException) e, listener);
+                PublicInterceptionNoHttp200((BingoNetWorkException) e, listener);
             }
             @Override
             public void onNext(String s) {
@@ -360,7 +363,7 @@ public class OkHttpInitiator {
         return observable;
     }
 
-    public void postCurrentThreadHttp(final Context ctx, String url, String arg, final OkHttpListener listener) {
+    public void postCurrentThreadHttp(String url, String arg, final OkHttpListener listener) {
         getObservableCurrentThreadPostHttp(url, arg).subscribe(new Subscriber<String>() {
             @Override
             public void onCompleted() {
@@ -369,7 +372,7 @@ public class OkHttpInitiator {
             }
             @Override
             public void onError(Throwable e) {
-                PublicInterceptionNoHttp200(ctx, (BingoNetWorkException)e, listener);
+                PublicInterceptionNoHttp200((BingoNetWorkException)e, listener);
             }
             @Override
             public void onNext(String s) {
@@ -475,138 +478,33 @@ public class OkHttpInitiator {
     }
 
 
-    public void downloadFileAsyn(final Context ctx, String url, RandomAccessFile file, long totalSize, final OKHttpListenerDownload listener) {
+    public void downloadFileAsyn(final DownloadTask downloadTask) {
         Logger.log(Logger.Type.DEBUG, "  下载 downloadFileInNewThread");
-        getObservableDownloadFile(url, file, totalSize).subscribeOn(Schedulers.newThread()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<DownloadProgress>() {
+        getObservableDownloadFile(downloadTask.getSeed()).subscribeOn(Schedulers.newThread()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<DownloadProgress>() {
             @Override
             public void onCompleted() {
-                listener.onFinally();
+                downloadTask.getListener().onFinally();
             }
+
             @Override
             public void onError(Throwable e) {
-                PublicInterceptionNoHttp200(ctx, (BingoNetWorkException)e, listener);
+                PublicInterceptionNoHttp200((BingoNetWorkException)e, downloadTask.getListener());
             }
 
             @Override
             public void onNext(DownloadProgress downloadProgress) {
-                listener.onProgress(downloadProgress.getPercent(), downloadProgress.getCompletionSize());
+                downloadTask.getListener().onProgress(downloadProgress.getPercent(), downloadProgress.getCompletionSize());
             }
-//
-//            @Override
-//            public void onNext(String s) {
-//                PublicInterceptionHttp200(s, listener);
-//            }
+
         });
     }
 
-    private Observable getObservableDownloadFile(final String url, final RandomAccessFile file, final long totalSize) {
-        Observable observable = Observable.create(new Observable.OnSubscribe<DownloadProgress>() {
-            @Override
-            public void call(final Subscriber<? super DownloadProgress> subscriber) {
-//                subscriber.onNext(new DownloadProgress());
-                if (null == mOkHttpClient){
-                    Logger.logException(new Exception("OkHttpClient not create! please check it in OKHttpManger.initHttp() "), "port url= "+url);
-                    subscriber.onError(new BingoNetWorkException(BingoNetWorkExceptionType.INIT_ERROR, "OkHttpClient not create! please check it in OKHttpManger.initHttp() "));
-                    subscriber.onCompleted();
-                    return;
-                }
-
-                if(file==null){
-                    Logger.logException(new Exception("OkHttpClient download error, file is null "), "port url= "+url);
-                    subscriber.onError(new BingoNetWorkException(BingoNetWorkExceptionType.IO_ERROR, "OkHttpClient download error, file is null "));
-                    subscriber.onCompleted();
-                    return;
-                }
-
-                // 获得本地下载的文件大小
-                try {
-//                    long totalSize =  completeSize;
-                    final long fileLength = file.length();
-
-//                    if (fileLength > 0 && totalSize == fileLength) {
-//                        // 执行回调
-//                        subscriber.onCompleted();
-//                        return;
-//                    }
-
-                    Request request=new Request.Builder().url(url).header("RANGE", "bytes=" + fileLength + "-") // Http value set breakpoints RANGE
-                            .build();
-
-                    file.seek(fileLength);
-
-                    mOkHttpClient.newCall(request)
-                            .enqueue(new Callback() {
-                                @Override
-                                public void onFailure(Call call, final IOException e) {
-                                    subscriber.onError(new BingoNetWorkException(BingoNetWorkExceptionType.IO_ERROR, "port_down_curThread url= "+url));
-                                }
-
-                                @Override
-                                public void onResponse(Call call, Response response) throws IOException {
-                                    if (response.isSuccessful()) {
-                                        ResponseBody body = response.body();
-                                        // 获取文件总长度
-                                        final long contentLength = body.contentLength();
-
-                                        long divisor;
-
-                                        if (totalSize <= 0) {
-                                            divisor = contentLength;
-                                        }else {
-                                            divisor = totalSize;
-                                        }
-                                        //以流的方式进行读取
-                                        InputStream inputStream = body.byteStream();
-                                        byte[] buffer = new byte[20480];
-                                        int len = 0;
-                                        long sum = fileLength;
-                                        float percent = 0;
-
-                                        DownloadProgress downloadProgress = new DownloadProgress();
-                                        while ((len = inputStream.read(buffer)) != -1){
-                                            sum+=len;
-                                            file.write(buffer, 0, len);
-                                            percent = (float) (sum * 100 / divisor);
-                                            downloadProgress.setPercent(percent);
-                                            downloadProgress.setCompletionSize(sum);
-                                            subscriber.onNext(downloadProgress);
-                                        }
-                                        inputStream.close();
-                                    }
-                                    subscriber.onCompleted();
-                                }
-                            });
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    subscriber.onCompleted();
-                }finally {
-
-                }
-            }
-        });
+    private Observable getObservableDownloadFile(DownloadSeed downloadSeed) {
+        Observable observable = Observable.create(downloadSeed.byClient(mOkHttpClient));
         return observable;
     }
 
-    class DownloadProgress{
-        private float percent;
-        private long completionSize;
 
-        public float getPercent() {
-            return percent;
-        }
-
-        public void setPercent(float percent) {
-            this.percent = percent;
-        }
-
-        public long getCompletionSize() {
-            return completionSize;
-        }
-
-        public void setCompletionSize(long completionSize) {
-            this.completionSize = completionSize;
-        }
-    }
 
 
     //公共拦截
@@ -629,7 +527,7 @@ public class OkHttpInitiator {
     }
 
     //公共拦截
-    private void PublicInterceptionNoHttp200(Context ctx, BingoNetWorkException e, OkHttpListener listener){
+    private void PublicInterceptionNoHttp200(BingoNetWorkException e, OkHttpListener listener){
         listener.onError(e);
     }
 
