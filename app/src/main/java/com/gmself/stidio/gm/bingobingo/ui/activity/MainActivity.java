@@ -51,7 +51,10 @@ public class MainActivity extends BaseActivity {
         open_tv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Manager_RouterM.getInstance().router_goto(ENUM_RouterE.ACTIVITY_OVERALL_HOME);
+
+//                OkHttpManger.getInstance().makeDownloadTask()
+
+//                Manager_RouterM.getInstance().router_goto(ENUM_RouterE.ACTIVITY_OVERALL_HOME);
             }
         });
 

@@ -8,7 +8,7 @@ import com.gmself.studio.mg.basemodule.log_tool.Logger;
 import com.gmself.studio.mg.basemodule.net_work.constant.HttpPortType;
 import com.gmself.studio.mg.basemodule.net_work.constant.HttpPortUpMessageType;
 import com.gmself.studio.mg.basemodule.net_work.constant.PortUrl;
-import com.gmself.studio.mg.basemodule.net_work.download.DownloadHandler;
+import com.gmself.studio.mg.basemodule.net_work.download.DownloadLeash;
 import com.gmself.studio.mg.basemodule.net_work.download.DownloadSeed;
 import com.gmself.studio.mg.basemodule.net_work.download.DownloadTask;
 import com.gmself.studio.mg.basemodule.net_work.exception.BingoNetWorkException;
@@ -139,12 +139,12 @@ public class OkHttpManger {
     /**
      * @param saveFileName 文件名称，限定默认存在缓存目录下 @link DirsTools.GetFileCachePath
      * */
-    public DownloadTask makeDownloadTask(String url, String saveFileName, DownloadHandler downloadHandler) throws FileNotFoundException {
+    public DownloadTask makeDownloadTask(String url, String saveFileName, DownloadLeash downloadLeash) throws FileNotFoundException {
         assert TextUtils.isEmpty(saveFileName);
 
         DownloadTask downloadTask = new DownloadTask();
         DownloadSeed downloadSeed = new DownloadSeed(url, saveFileName, 0);
-        downloadTask.setHandler(downloadHandler);
+        downloadTask.setLeash(downloadLeash);
         downloadTask.setSeed(downloadSeed);
 
         return downloadTask;

@@ -10,7 +10,7 @@ import com.gmself.studio.mg.basemodule.net_work.http_core.listener.OKHttpListene
 public class DownloadTask {
 
     private DownloadSeed seed;
-    private DownloadHandler handler;
+    private DownloadLeash leash;
     private OKHttpListenerDownload listener;
 
     private String taskName;
@@ -26,34 +26,12 @@ public class DownloadTask {
         this.seed = seed;
     }
 
-    public DownloadHandler getHandler() {
-        return handler;
+    public DownloadLeash getLeash() {
+        return leash;
     }
 
-    public void setHandler(DownloadHandler handler_) {
-        this.handler = handler_;
-        listener = new OKHttpListenerDownload() {
-            @Override
-            public void onSuccess() {
-
-            }
-
-            @Override
-            public void onProgress(float percent, long completionSize) {
-                handler.setPercent(percent);
-                handler.setCompletionSize(completionSize);
-            }
-
-            @Override
-            public void onError(BingoNetWorkException resultCode) {
-
-            }
-
-            @Override
-            public void onFinally() {
-
-            }
-        };
+    public void setLeash(DownloadLeash leash) {
+        this.leash = leash;
     }
 
     public OKHttpListenerDownload getListener() {

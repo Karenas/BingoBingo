@@ -2,9 +2,12 @@ package com.gmself.studio.mg.basemodule.net_work.download;
 
 /**
  * Created by guomeng on 4/28.
+ *
+ * DownTask中用于通知主线程的部分
+ *
  */
 
-public class DownloadHandler {
+public class DownloadLeash {
 
 
     private int status = -1; // -1准备中， 0 下载， 1 暂停 2 停止 3 取消中 4 已取消 5 保存中 6 已完成
