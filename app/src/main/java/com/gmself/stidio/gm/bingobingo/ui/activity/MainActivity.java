@@ -1,7 +1,10 @@
 package com.gmself.stidio.gm.bingobingo.ui.activity;
 
 import android.Manifest;
+import android.content.ComponentName;
 import android.content.Intent;
+import android.content.ServiceConnection;
+import android.os.IBinder;
 import android.support.annotation.MainThread;
 import android.view.View;
 import android.widget.TextView;
@@ -62,10 +65,7 @@ public class MainActivity extends BaseActivity {
 
     @Override
     public void setFunction() {
-
-//        requestPermission(new String[]{Manifest.permission.READ_PHONE_STATE}, PermissionTag.READ_PHONE_STATE);
         requestPermission(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, PermissionTag.WRITE_EXTERNAL_STORAGE);
-
 
 //        Manager_RouterM.getInstance().router_goto(ENUM_RouterE.ACTIVITY_OVERALL_HOME);
     }
@@ -152,6 +152,17 @@ public class MainActivity extends BaseActivity {
 
     private void startLocationService(){
         Intent locationServerIntent = new Intent(this.getApplicationContext(), LocationService.class);
+        bindService(locationServerIntent, new ServiceConnection() {
+            @Override
+            public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
+
+            }
+
+            @Override
+            public void onServiceDisconnected(ComponentName componentName) {
+
+            }
+        }, 0);
         startService(locationServerIntent);
     }
 }
