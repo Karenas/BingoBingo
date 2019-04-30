@@ -79,13 +79,17 @@ public class LocationInfo {
         //获取Location
         if (ActivityCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             Location location = locationManager.getLastKnownLocation(locationProvider);
+            if (location == null && locationProvider == LocationManager.GPS_PROVIDER){
+                location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+            }
+
             if (location != null) {
                 //不为空,显示地理位置经纬度
                 if (mOnLocationResultListener != null) {
                     mOnLocationResultListener.onLocationResult(location);
                 }
-
             }
+
             if (mOnLocationChangeListener!=null){
                 //监视地理位置变化
                 locationManager.requestLocationUpdates(locationProvider, 3000, 1, locationListener);

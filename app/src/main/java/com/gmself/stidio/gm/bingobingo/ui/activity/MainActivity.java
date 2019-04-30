@@ -54,10 +54,7 @@ public class MainActivity extends BaseActivity {
         open_tv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-//                OkHttpManger.getInstance().makeDownloadTask()
-
-//                Manager_RouterM.getInstance().router_goto(ENUM_RouterE.ACTIVITY_OVERALL_HOME);
+                Manager_RouterM.getInstance().router_goto(ENUM_RouterE.ACTIVITY_OVERALL_HOME);
             }
         });
 
@@ -152,17 +149,6 @@ public class MainActivity extends BaseActivity {
 
     private void startLocationService(){
         Intent locationServerIntent = new Intent(this.getApplicationContext(), LocationService.class);
-        bindService(locationServerIntent, new ServiceConnection() {
-            @Override
-            public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
-
-            }
-
-            @Override
-            public void onServiceDisconnected(ComponentName componentName) {
-
-            }
-        }, 0);
         startService(locationServerIntent);
     }
 }

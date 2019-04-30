@@ -33,7 +33,7 @@ public class Port_getLocationInfo extends BaseDoPort {
 
         PostUpJsonBean postMsg = getPostMsg(location);
 
-        OkHttpManger.getInstance().doPostJson(context, postMsg, listener);
+        OkHttpManger.getInstance().doPostJson(postMsg, listener);
         return r;
     }
 
@@ -44,7 +44,7 @@ public class Port_getLocationInfo extends BaseDoPort {
         parameters.put(HttpPortUpMessageType.KEY_HF_WEATHER, "HE1904062149471156");
         parameters.put(HttpPortUpMessageType.LOCATION_HF_WEATHER, location);
 
-        OkHttpManger.getInstance().doGet(context, url, parameters, listener);
+        OkHttpManger.getInstance().doGet(url, parameters, listener);
         return r;
     }
 
@@ -54,7 +54,7 @@ public class Port_getLocationInfo extends BaseDoPort {
 
         PostUpJsonBean postMsg = getPostMsg(location);
 
-        OkHttpManger.getInstance().doPostJsonInCurrentThread(context, postMsg, listener);
+        OkHttpManger.getInstance().doPostJsonInCurrentThread(postMsg, listener);
         return r;
     }
 

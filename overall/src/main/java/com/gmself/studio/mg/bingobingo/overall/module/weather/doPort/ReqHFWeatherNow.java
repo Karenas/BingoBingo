@@ -27,7 +27,7 @@ public class ReqHFWeatherNow extends BaseDoPort{
 
         PostUpJsonBean postMsg = getPostMsg(cityID);
 
-        OkHttpManger.getInstance().doPostJson(context, postMsg, listener);
+        OkHttpManger.getInstance().doPostJson(postMsg, listener);
         return r;
     }
 
@@ -37,7 +37,7 @@ public class ReqHFWeatherNow extends BaseDoPort{
 
         PostUpJsonBean postMsg = getPostMsg(cityID);
 
-        OkHttpManger.getInstance().doPostJsonInCurrentThread(context, postMsg, listener);
+        OkHttpManger.getInstance().doPostJsonInCurrentThread(postMsg, listener);
         return r;
     }
 

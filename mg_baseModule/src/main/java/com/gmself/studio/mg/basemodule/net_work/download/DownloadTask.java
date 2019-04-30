@@ -13,10 +13,19 @@ public class DownloadTask {
     private DownloadLeash leash;
     private OKHttpListenerDownload listener;
 
+    private int key;
+
     private String taskName;
     private long totalSize;
     private int type;
 
+    public int getKey() {
+        return key;
+    }
+
+    public void setKey(int key) {
+        this.key = key;
+    }
 
     public DownloadSeed getSeed() {
         return seed;

@@ -28,7 +28,7 @@ public class Port_test extends BaseDoPort {
 
         PostUpJsonBean postMsg = getPostMsg(user);
 
-        OkHttpManger.getInstance().doPostJson(context, postMsg, listener);
+        OkHttpManger.getInstance().doPostJson(postMsg, listener);
         return r;
     }
 
@@ -38,7 +38,7 @@ public class Port_test extends BaseDoPort {
 
         PostUpJsonBean postMsg = getPostMsg(user);
 
-        OkHttpManger.getInstance().doPostJsonInCurrentThread(context, postMsg, listener);
+        OkHttpManger.getInstance().doPostJsonInCurrentThread(postMsg, listener);
         return r;
     }
 

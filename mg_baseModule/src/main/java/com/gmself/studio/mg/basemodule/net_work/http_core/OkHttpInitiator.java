@@ -1,6 +1,7 @@
 package com.gmself.studio.mg.basemodule.net_work.http_core;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.alibaba.fastjson.JSON;
@@ -354,7 +355,9 @@ public class OkHttpInitiator {
                         String str = response.body().string();
                         Logger.log(Logger.Type.NET_PORT, new String[]{"port_down url= "+url, "port_down msg= "+str});
 
-                        subscriber.onNext(str);
+                        if (!TextUtils.isEmpty(str)){
+                            subscriber.onNext(str);
+                        }
                         subscriber.onCompleted();
                     }
                 });
