@@ -143,6 +143,7 @@ public class OkHttpManger {
         assert TextUtils.isEmpty(saveFileName);
 
         DownloadTask downloadTask = new DownloadTask();
+        downloadTask.setTaskName(saveFileName);
         DownloadSeed downloadSeed = new DownloadSeed(url, saveFileName, 0);
         downloadTask.setLeash(downloadLeash);
         downloadTask.setSeed(downloadSeed);

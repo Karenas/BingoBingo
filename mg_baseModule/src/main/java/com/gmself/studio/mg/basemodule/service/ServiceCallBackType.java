@@ -9,5 +9,7 @@ public enum ServiceCallBackType {
     PUNCH,
     LOCATION,
     WEATHER,
+    DOWNLOAD,
+
 
 }

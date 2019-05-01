@@ -13,12 +13,15 @@ import android.widget.Toast;
 import com.alibaba.fastjson.JSONObject;
 import com.gmself.stidio.gm.bingobingo.Port_test;
 import com.gmself.stidio.gm.bingobingo.R;
+import com.gmself.stidio.gm.bingobingo.downloadmanager.DownloadManagerActivity;
 import com.gmself.studio.mg.basemodule.arouter.ENUM_RouterE;
 import com.gmself.studio.mg.basemodule.arouter.Manager_RouterM;
 import com.gmself.studio.mg.basemodule.entity.LocationBasic;
 import com.gmself.studio.mg.basemodule.entity.User;
 import com.gmself.studio.mg.basemodule.environment.DeviceInfo;
 import com.gmself.studio.mg.basemodule.log_tool.Logger;
+import com.gmself.studio.mg.basemodule.net_work.download.DownloadLeash;
+import com.gmself.studio.mg.basemodule.net_work.download.DownloadTask;
 import com.gmself.studio.mg.basemodule.net_work.http_core.OkHttpManger;
 import com.gmself.studio.mg.basemodule.net_work.http_core.listener.OKHttpListenerDownload;
 import com.gmself.studio.mg.basemodule.net_work.http_core.listener.OKHttpListenerJsonObj;
@@ -30,7 +33,10 @@ import com.gmself.studio.mg.basemodule.BaseConfig;
 import com.gmself.studio.mg.basemodule.base.ui.activity.BaseActivity;
 import com.gmself.studio.mg.basemodule.constant.PermissionTag;
 import com.gmself.studio.mg.basemodule.net_work.exception.BingoNetWorkException;
+import com.gmself.studio.mg.basemodule.service.moduleService.download.DownloadService;
 import com.gmself.studio.mg.bingobingo.overall.module.weather.WeatherMaker;
+
+import java.io.FileNotFoundException;
 
 public class MainActivity extends BaseActivity {
 
@@ -54,7 +60,25 @@ public class MainActivity extends BaseActivity {
         open_tv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Manager_RouterM.getInstance().router_goto(ENUM_RouterE.ACTIVITY_OVERALL_HOME);
+//                Manager_RouterM.getInstance().router_goto(ENUM_RouterE.ACTIVITY_OVERALL_HOME);
+//                Manager_RouterM.getInstance().router_goto(ENUM_RouterE.ACTIVITY_DOWNLOAD_MANAGER_MAIN);
+                Intent intent = new Intent(MainActivity.this, DownloadManagerActivity.class);
+                startActivity(intent);
+
+//                if (downloadService == null){
+//                    return;
+//                }
+//
+//                DownloadLeash leash = new DownloadLeash();
+//                try {
+//                    DownloadTask task = OkHttpManger.getInstance().makeDownloadTask("http://tcy.198424.com/aejiaobengifgunzuixin.zip",
+//                            "bingo.zip", leash);
+////                    OkHttpManger.getInstance().downloadFileAsyn(task);
+//                    downloadService.addTask(task);
+//                } catch (FileNotFoundException e) {
+//                    e.printStackTrace();
+//                }
+
             }
         });
 
@@ -63,8 +87,7 @@ public class MainActivity extends BaseActivity {
     @Override
     public void setFunction() {
         requestPermission(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, PermissionTag.WRITE_EXTERNAL_STORAGE);
-
-//        Manager_RouterM.getInstance().router_goto(ENUM_RouterE.ACTIVITY_OVERALL_HOME);
+        startDownloadService();
     }
 
     private void registerGetCityIDListener(){
@@ -150,5 +173,10 @@ public class MainActivity extends BaseActivity {
     private void startLocationService(){
         Intent locationServerIntent = new Intent(this.getApplicationContext(), LocationService.class);
         startService(locationServerIntent);
+    }
+
+    private void startDownloadService(){
+        Intent downloadServerIntent = new Intent(this.getApplicationContext(), DownloadService.class);
+        startService(downloadServerIntent);
     }
 }

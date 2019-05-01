@@ -20,6 +20,7 @@ import com.gmself.studio.mg.basemodule.net_work.http_core.listener.OKHttpListene
 import com.gmself.studio.mg.basemodule.net_work.http_core.listener.OKHttpListenerJsonStr;
 import com.gmself.studio.mg.basemodule.net_work.http_core.listener.OkHttpListener;
 import com.gmself.studio.mg.basemodule.net_work.http_custom_down_data.HttpDownDateCustom;
+import com.gmself.studio.mg.basemodule.service.moduleService.download.DownloadStatus;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -486,6 +487,14 @@ public class OkHttpInitiator {
         getObservableDownloadFile(downloadTask.getSeed()).subscribeOn(Schedulers.newThread()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<DownloadProgress>() {
             @Override
             public void onCompleted() {
+                if (null==downloadTask.getListener())
+                    return;
+
+                if (downloadTask.getTotalSize() <= downloadTask.getLeash().getCompletionSize()){
+                    downloadTask.getLeash().setStatus(DownloadStatus.COMPLETE);
+                    downloadTask.getListener().onSuccess();
+                }
+
                 downloadTask.getListener().onFinally();
             }
 
@@ -496,7 +505,11 @@ public class OkHttpInitiator {
 
             @Override
             public void onNext(DownloadProgress downloadProgress) {
-                downloadTask.getListener().onProgress(downloadProgress.getPercent(), downloadProgress.getCompletionSize());
+                downloadTask.setTotalSize(downloadProgress.getTotalSize());
+                downloadTask.getLeash().setPercent(downloadProgress.getPercent());
+                downloadTask.getLeash().setCompletionSize(downloadProgress.getCompletionSize());
+                if (null!=downloadTask.getListener())
+                    downloadTask.getListener().onProgress(downloadProgress.getPercent(), downloadProgress.getCompletionSize());
             }
 
         });
@@ -531,7 +544,8 @@ public class OkHttpInitiator {
 
     //公共拦截
     private void PublicInterceptionNoHttp200(BingoNetWorkException e, OkHttpListener listener){
-        listener.onError(e);
+        if (listener!=null)
+            listener.onError(e);
     }
 
     public class HttpLogger implements HttpLoggingInterceptor.Logger {

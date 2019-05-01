@@ -1,2 +1,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.gmself.stidio.gm.bingobingo.downloadmanager" />
+    package="com.gmself.stidio.gm.bingobingo.downloadmanager" >
+
+    <application>
+
+        <activity android:name=".DownloadManagerActivity" android:launchMode="singleTask"/>
+    </application>
+
+
+</manifest>

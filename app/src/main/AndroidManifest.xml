@@ -37,6 +37,10 @@
         <service android:name="com.gmself.studio.mg.basemodule.service.moduleService.LocationService"
             android:launchMode="singleTask"/>
 
+        <service android:name="com.gmself.studio.mg.basemodule.service.moduleService.download.DownloadService"
+            android:launchMode="singleTask"
+            />
+
     </application>
 
 </manifest>

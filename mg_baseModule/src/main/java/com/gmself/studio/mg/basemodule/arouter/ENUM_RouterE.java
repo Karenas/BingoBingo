@@ -14,6 +14,8 @@ public enum ENUM_RouterE {
 
     ACTIVITY_FONT_CONVERSION_HOME("/fontConversion/HomeActivity"),
 
+    ACTIVITY_DOWNLOAD_MANAGER_MAIN("/downloadManager/DownloadManagerActivity"),
+
     ;
 
     private String path;

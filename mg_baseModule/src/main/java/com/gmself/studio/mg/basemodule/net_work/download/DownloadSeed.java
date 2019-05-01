@@ -31,11 +31,10 @@ public class DownloadSeed implements Observable.OnSubscribe<DownloadProgress> {
     private OkHttpClient mOkHttpClient;
     private String url;
     private RandomAccessFile file;
-    private long totalSize;
 
     public DownloadSeed(String url, String saveFileName, long totalSize) throws FileNotFoundException {
         this.url = url;
-        this.totalSize = totalSize;
+//        this.totalSize = totalSize;
 
         checkCachePath();
         File downFile = new File(DirsTools.GetFileCachePath(), saveFileName);
@@ -100,13 +99,8 @@ public class DownloadSeed implements Observable.OnSubscribe<DownloadProgress> {
                                 // 获取文件总长度
                                 final long contentLength = body.contentLength();
 
-                                long divisor;
+                                long totalLength = fileLength + contentLength;
 
-                                if (totalSize <= 0) {
-                                    divisor = contentLength;
-                                }else {
-                                    divisor = totalSize;
-                                }
                                 //以流的方式进行读取
                                 InputStream inputStream = body.byteStream();
                                 byte[] buffer = new byte[20480];
@@ -115,10 +109,11 @@ public class DownloadSeed implements Observable.OnSubscribe<DownloadProgress> {
                                 float percent = 0;
 
                                 DownloadProgress downloadProgress = new DownloadProgress();
+                                downloadProgress.setTotalSize(totalLength);
                                 while ((len = inputStream.read(buffer)) != -1){
                                     sum+=len;
                                     file.write(buffer, 0, len);
-                                    percent = (float) (sum * 100 / divisor);
+                                    percent = (float) (sum * 100 / totalLength);
                                     downloadProgress.setPercent(percent);
                                     downloadProgress.setCompletionSize(sum);
                                     subscriber.onNext(downloadProgress);

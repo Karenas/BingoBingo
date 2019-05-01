@@ -11,13 +11,12 @@ public class DownloadTask {
 
     private DownloadSeed seed;
     private DownloadLeash leash;
-    private OKHttpListenerDownload listener;
 
-    private int key;
+    private boolean bePush = false;
+    private int key = -1;
 
     private String taskName;
     private long totalSize;
-    private int type;
 
     public int getKey() {
         return key;
@@ -44,7 +43,7 @@ public class DownloadTask {
     }
 
     public OKHttpListenerDownload getListener() {
-        return listener;
+        return this.leash.getListener();
     }
 
     public String getTaskName() {
@@ -60,14 +59,15 @@ public class DownloadTask {
     }
 
     public void setTotalSize(long totalSize) {
-        this.totalSize = totalSize;
+        if (this.totalSize <= 0 )
+            this.totalSize = totalSize;
     }
 
-    public int getType() {
-        return type;
+    public boolean isBePush() {
+        return bePush;
     }
 
-    public void setType(int type) {
-        this.type = type;
+    public void setBePush(boolean bePush) {
+        this.bePush = bePush;
     }
 }
