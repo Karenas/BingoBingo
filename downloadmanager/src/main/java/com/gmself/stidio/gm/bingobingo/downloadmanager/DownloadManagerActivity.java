@@ -66,14 +66,6 @@ public class DownloadManagerActivity extends BaseActivity{
 
     @Override
     public void setFunction() {
-//        Timer mTimer = new Timer();
-//        TimerTask timerTask = new TimerTask() {
-//            @Override
-//            public void run() {
-//
-//            }
-//        };
-//        mTimer.schedule(timerTask, 1000, 2500);
 
         runnable=new Runnable(){
             @Override
@@ -118,8 +110,8 @@ public class DownloadManagerActivity extends BaseActivity{
             @Override
             public void executeInMainThread() {
                 adapter.setmList(downloadService.getExecutionPool(), downloadService.getWaitPool());
-//                download_manager_main_rv.setAdapter(adapter);
-                adapter.notifyDataSetChanged();
+                download_manager_main_rv.setAdapter(adapter);
+//                adapter.notifyDataSetChanged();
             }
         });
     }

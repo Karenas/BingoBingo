@@ -141,7 +141,6 @@ public class DownloadSeed implements Observable.OnSubscribe<DownloadProgress> {
             e.printStackTrace();
             subscriber.onCompleted();
         }finally {
-
         }
     }
 }

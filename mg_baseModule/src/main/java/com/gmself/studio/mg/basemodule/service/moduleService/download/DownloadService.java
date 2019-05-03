@@ -174,11 +174,11 @@ public class DownloadService extends IntentService {
     }
 
     public synchronized SparseArray<DownloadTask> getExecutionPool() {
-        return taskPool.getExecutionPool();
+        return taskPool.getExecutionPool().clone();
     }
 
     public synchronized SparseArray<DownloadTask> getWaitPool() {
-        return taskPool.getWaitPool();
+        return taskPool.getWaitPool().clone();
     }
 
 }

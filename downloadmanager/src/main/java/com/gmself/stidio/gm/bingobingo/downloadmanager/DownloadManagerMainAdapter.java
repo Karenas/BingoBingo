@@ -38,10 +38,10 @@ public class DownloadManagerMainAdapter extends RecyclerView.Adapter<DownloadMan
     }
 
     public void setmList(SparseArray<DownloadTask> executePool, SparseArray<DownloadTask> waitPool) {
-        this.executePool = executePool.clone();
+        this.executePool = executePool;
         this.waitPool = waitPool;
         count = this.executePool.size() + this.waitPool.size();
-        Logger.log(Logger.Type.DEBUG, "task adapterSetList   executePool = "+ this.executePool +" | waitPool= "+ this.waitPool);
+        Logger.log(Logger.Type.DEBUG, "task adapterSetList   executePool = "+ this.executePool.hashCode() +" | waitPool= "+ this.waitPool.hashCode());
         Logger.log(Logger.Type.DEBUG, "task adapterSetList   executePool size = "+ this.executePool.size() +" | waitPool size = "+ this.waitPool.size());
     }
 
@@ -72,18 +72,27 @@ public class DownloadManagerMainAdapter extends RecyclerView.Adapter<DownloadMan
 
     @Override
     public void onBindViewHolder(final MyViewHolder holder, final int position) {
+        Logger.log(Logger.Type.DEBUG, "task adapterSetList   onBindViewHolder in");
         holder.itemView.setTag(position);
         DownloadTask item;
         if (position < executePool.size()){
             int i = executePool.size() - 1 -position;
             item = executePool.valueAt(i);
+            Logger.log(Logger.Type.DEBUG, "task adapterSetList   onBindViewHolder in execute taskName="+item.getTaskName());
+
         }else {
             int i = (count - executePool.size()) - 1  - (position - executePool.size());
             item = waitPool.valueAt(i);
+            Logger.log(Logger.Type.DEBUG, "task adapterSetList   onBindViewHolder in wait taskName="+item.getTaskName());
+
         }
-        holder.task_name_tv.setText(item.getTaskName());
-        holder.task_pb.setProgress((int) item.getLeash().getPercent());
-//        holder.speed_tv.setText(item.getLeash().getStatus());
+
+        if (holder.task_name_tv !=null )
+            holder.task_name_tv.setText(item.getTaskName());
+        if (holder.task_pb !=null )
+            holder.task_pb.setProgress((int) item.getLeash().getPercent());
+        if (holder.speed_tv !=null )
+            holder.speed_tv.setText(String.valueOf(item.getLeash().getStatus()));
         item.getLeash().setListener(new OKHttpListenerDownload() {
             @Override
             public void onSuccess() {
@@ -92,7 +101,9 @@ public class DownloadManagerMainAdapter extends RecyclerView.Adapter<DownloadMan
 
             @Override
             public void onProgress(float percent, long completionSize) {
-                holder.task_pb.setProgress((int) percent);
+                if (holder!=null && holder.task_pb != null){
+                    holder.task_pb.setProgress((int) percent);
+                }
             }
 
             @Override
