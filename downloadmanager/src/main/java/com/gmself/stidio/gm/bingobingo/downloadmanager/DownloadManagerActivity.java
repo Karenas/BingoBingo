@@ -3,14 +3,19 @@ package com.gmself.stidio.gm.bingobingo.downloadmanager;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.os.Handler;
 import android.os.IBinder;
+import android.os.Looper;
+import android.support.annotation.MainThread;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.Toast;
 
 import com.alibaba.android.arouter.facade.annotation.Route;
 import com.gmself.studio.mg.basemodule.base.ui.activity.BaseActivity;
+import com.gmself.studio.mg.basemodule.log_tool.Logger;
 import com.gmself.studio.mg.basemodule.mg_dataProcess.MGThreadTool;
 import com.gmself.studio.mg.basemodule.mg_dataProcess.MGThreadTool_mainThread;
 import com.gmself.studio.mg.basemodule.net_work.download.DownloadLeash;
@@ -22,6 +27,8 @@ import com.gmself.studio.mg.basemodule.service.ServiceCallBackType;
 import com.gmself.studio.mg.basemodule.service.moduleService.download.DownloadService;
 
 import java.io.FileNotFoundException;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * Created by guomeng on 5/1.
@@ -32,6 +39,10 @@ public class DownloadManagerActivity extends BaseActivity{
     private RecyclerView download_manager_main_rv;
     private DownloadManagerMainAdapter adapter;
     private DownloadService downloadService;
+
+    private Runnable runnable;
+
+    private volatile boolean needUpdateUI = false;
 
     @Override
     protected int setLayoutID() {
@@ -55,8 +66,31 @@ public class DownloadManagerActivity extends BaseActivity{
 
     @Override
     public void setFunction() {
+//        Timer mTimer = new Timer();
+//        TimerTask timerTask = new TimerTask() {
+//            @Override
+//            public void run() {
+//
+//            }
+//        };
+//        mTimer.schedule(timerTask, 1000, 2500);
+
+        runnable=new Runnable(){
+            @Override
+            public void run() {
+                if (needUpdateUI){
+                    updateListDisplay();
+                    needUpdateUI = false;
+                }
+                updateUIHandler.postDelayed(this, 2500);
+            }
+        };
+        updateUIHandler.postDelayed(runnable, 1000);
+
         bindDownloadService();
     }
+
+    Handler updateUIHandler = new Handler(Looper.getMainLooper());
 
     private void registerDownloadServiceListener(){
         ServiceCallBack callBack = new DownloadListener();
@@ -66,17 +100,29 @@ public class DownloadManagerActivity extends BaseActivity{
     class DownloadListener implements ServiceCallBack{
         @Override
         public int callback(Object param) {
-            MGThreadTool.getInstance().doInMainThread(new MGThreadTool_mainThread() {
-                @Override
-                public void executeInMainThread() {
-                    adapter.setmList(downloadService.getExecutionPool(), downloadService.getWaitPool());
-                    adapter.notifyDataSetChanged();
-                }
-            });
+            Logger.log(Logger.Type.DEBUG, "task 需要更新一次UI ");
+            needUpdateUI = true;
             return 0;
         }
     }
 
+    @Override
+    protected void onDestroy() {
+        updateUIHandler.removeCallbacks(runnable);
+        super.onDestroy();
+    }
+
+    private void updateListDisplay(){
+        Logger.log(Logger.Type.DEBUG, "task更新一次UI ");
+        MGThreadTool.getInstance().doInMainThread(new MGThreadTool_mainThread() {
+            @Override
+            public void executeInMainThread() {
+                adapter.setmList(downloadService.getExecutionPool(), downloadService.getWaitPool());
+//                download_manager_main_rv.setAdapter(adapter);
+                adapter.notifyDataSetChanged();
+            }
+        });
+    }
 
     private void bindDownloadService(){
         Intent downloadServerIntent = new Intent(this.getApplicationContext(), DownloadService.class);
@@ -105,10 +151,15 @@ public class DownloadManagerActivity extends BaseActivity{
         try {
             DownloadTask task = OkHttpManger.getInstance().makeDownloadTask("http://tcy.198424.com/aejiaobengifgunzuixin.zip",
                     "bingo_"+(tempI+=1)+".zip", leash);
-            downloadService.addTask(task);
-            adapter.setmList(downloadService.getExecutionPool(), downloadService.getWaitPool());
-            adapter.notifyDataSetChanged();
+            if (downloadService.addTask(task)){
+                Logger.log(Logger.Type.DEBUG, "任务添加成功 "+"bingo_"+tempI);
+            }else {
+                Logger.log(Logger.Type.DEBUG, "任务添加失败 "+"bingo_"+tempI);
+            }
+            needUpdateUI = true;
         } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (Exception e){
             e.printStackTrace();
         }
     }

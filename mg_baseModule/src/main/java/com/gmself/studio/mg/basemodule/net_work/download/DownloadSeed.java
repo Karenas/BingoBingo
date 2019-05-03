@@ -31,11 +31,14 @@ public class DownloadSeed implements Observable.OnSubscribe<DownloadProgress> {
     private OkHttpClient mOkHttpClient;
     private String url;
     private RandomAccessFile file;
+    private boolean shutdown = false;
+
+    private String saveName;
 
     public DownloadSeed(String url, String saveFileName, long totalSize) throws FileNotFoundException {
         this.url = url;
 //        this.totalSize = totalSize;
-
+        saveName = saveFileName;
         checkCachePath();
         File downFile = new File(DirsTools.GetFileCachePath(), saveFileName);
         this.file = new RandomAccessFile(downFile.getAbsoluteFile(), "rwd");
@@ -51,6 +54,14 @@ public class DownloadSeed implements Observable.OnSubscribe<DownloadProgress> {
     public DownloadSeed byClient(OkHttpClient mOkHttpClient) {
         this.mOkHttpClient = mOkHttpClient;
         return this;
+    }
+
+    public boolean isShutdown() {
+        return shutdown;
+    }
+
+    public void setShutdown(boolean shutdown) {
+        this.shutdown = shutdown;
     }
 
     @Override
@@ -79,6 +90,7 @@ public class DownloadSeed implements Observable.OnSubscribe<DownloadProgress> {
 //                        subscriber.onCompleted();
 //                        return;
 //                    }
+//            Logger.log(Logger.Type.DEBUG, " task   download call  taskName="+saveName+"  url="+url);
 
             Request request=new Request.Builder().url(url).header("RANGE", "bytes=" + fileLength + "-") // Http value set breakpoints RANGE
                     .build();
@@ -86,43 +98,45 @@ public class DownloadSeed implements Observable.OnSubscribe<DownloadProgress> {
             file.seek(fileLength);
 
             mOkHttpClient.newCall(request)
-                    .enqueue(new Callback() {
-                        @Override
-                        public void onFailure(Call call, final IOException e) {
-                            subscriber.onError(new BingoNetWorkException(BingoNetWorkExceptionType.IO_ERROR, "port_down_curThread url= "+url));
+            .enqueue(new Callback() {
+                @Override
+                public void onFailure(Call call, final IOException e) {
+                    subscriber.onError(new BingoNetWorkException(BingoNetWorkExceptionType.IO_ERROR, "task port_down_curThread url= "+url));
+                }
+
+                @Override
+                public void onResponse(Call call, Response response) throws IOException {
+//                    Logger.log(Logger.Type.DEBUG, " task   download OnResponse1  taskName="+saveName);
+                    if (response.isSuccessful()) {
+//                        Logger.log(Logger.Type.DEBUG, " task   download OnResponse2  taskName="+saveName+"  url="+url);
+                        ResponseBody body = response.body();
+                        // 获取文件总长度
+                        final long contentLength = body.contentLength();
+
+                        long totalLength = fileLength + contentLength;
+
+                        //以流的方式进行读取
+                        InputStream inputStream = body.byteStream();
+                        byte[] buffer = new byte[20480];
+                        int len = 0;
+                        long sum = fileLength;
+                        float percent = 0;
+                        Logger.log(Logger.Type.DEBUG, " task   download OnResponse3  taskName="+saveName+"  shutdown="+shutdown);
+                        DownloadProgress downloadProgress = new DownloadProgress();
+                        downloadProgress.setTotalSize(totalLength);
+                        while ((len = inputStream.read(buffer)) != -1 && !shutdown){
+                            sum+=len;
+                            file.write(buffer, 0, len);
+                            percent = (float) (sum * 100 / totalLength);
+                            downloadProgress.setPercent(percent);
+                            downloadProgress.setCompletionSize(sum);
+                            subscriber.onNext(downloadProgress);
                         }
-
-                        @Override
-                        public void onResponse(Call call, Response response) throws IOException {
-                            if (response.isSuccessful()) {
-                                ResponseBody body = response.body();
-                                // 获取文件总长度
-                                final long contentLength = body.contentLength();
-
-                                long totalLength = fileLength + contentLength;
-
-                                //以流的方式进行读取
-                                InputStream inputStream = body.byteStream();
-                                byte[] buffer = new byte[20480];
-                                int len = 0;
-                                long sum = fileLength;
-                                float percent = 0;
-
-                                DownloadProgress downloadProgress = new DownloadProgress();
-                                downloadProgress.setTotalSize(totalLength);
-                                while ((len = inputStream.read(buffer)) != -1){
-                                    sum+=len;
-                                    file.write(buffer, 0, len);
-                                    percent = (float) (sum * 100 / totalLength);
-                                    downloadProgress.setPercent(percent);
-                                    downloadProgress.setCompletionSize(sum);
-                                    subscriber.onNext(downloadProgress);
-                                }
-                                inputStream.close();
-                            }
-                            subscriber.onCompleted();
-                        }
-                    });
+                        inputStream.close();
+                    }
+                    subscriber.onCompleted();
+                }
+            });
         } catch (IOException e) {
             e.printStackTrace();
             subscriber.onCompleted();

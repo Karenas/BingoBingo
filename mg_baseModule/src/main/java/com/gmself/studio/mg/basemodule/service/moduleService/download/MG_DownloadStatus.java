@@ -20,9 +20,10 @@ import static com.gmself.studio.mg.basemodule.service.moduleService.download.Dow
 import static com.gmself.studio.mg.basemodule.service.moduleService.download.DownloadStatus.REMOVE_FAIL;
 import static com.gmself.studio.mg.basemodule.service.moduleService.download.DownloadStatus.REMOVE_SUCCESS;
 import static com.gmself.studio.mg.basemodule.service.moduleService.download.DownloadStatus.RUN;
+import static com.gmself.studio.mg.basemodule.service.moduleService.download.DownloadStatus.TASK_POOL_FULL;
 
 @Documented
-@IntDef(flag = false, value = {ALREADY_INSIDE, ADD_IN_EXECUTE_POOL, ADD_IN_WAIT_POOL, ADD_FAIL, REMOVE_SUCCESS, REMOVE_FAIL,
+@IntDef(flag = false, value = {TASK_POOL_FULL, ALREADY_INSIDE, ADD_IN_EXECUTE_POOL, ADD_IN_WAIT_POOL, ADD_FAIL, REMOVE_SUCCESS, REMOVE_FAIL,
         READY, RUN, PAUSE, PROCESS, COMPLETE, FAIL})
 @Target({ElementType.METHOD, ElementType.FIELD, ElementType.PARAMETER})
 @Retention(RetentionPolicy.SOURCE)

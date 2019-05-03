@@ -37,9 +37,12 @@ public class DownloadService extends IntentService {
 
     private boolean survive = true;
 
-    private int interval = 1000;
+    private int interval = 2000;
 
-    private DownloadTaskPool taskPool = new DownloadTaskPool(3, 10);
+    private int maxNum = 10;
+    private int parallelNum = 3;
+
+    private DownloadTaskPool taskPool = new DownloadTaskPool(parallelNum, maxNum);
 
     public DownloadService() {
         super("DownloadService");
@@ -76,8 +79,10 @@ public class DownloadService extends IntentService {
         while (survive){
             SystemClock.sleep(interval);
             r |= checkExecuteTaskStatus();
+            checkWaitTaskStatus();
             r |= checkExecutePush();
 
+            Logger.log(Logger.Type.DEBUG, "task 更新一次UI 前service的r="+r);
             if (r){
                 ServiceCallBackManager.getInstance().callback(ServiceCallBackType.DOWNLOAD, null);
                 r = false;
@@ -91,11 +96,13 @@ public class DownloadService extends IntentService {
         Logger.log(Logger.Type.DEBUG, " service  destroy---------");
     }
 
-    private boolean checkExecuteTaskStatus(){
+    private synchronized boolean checkExecuteTaskStatus(){
         DownloadTask task;
         boolean r = false;
         for (int i = 0; i < taskPool.getExecutionPool().size(); i++) {
             task = taskPool.getExecutionPool().valueAt(i);
+            Logger.log(Logger.Type.DEBUG, " task checkExecuteTaskStatus  task status="+task.getLeash().getStatus() +"    taskName="+task.getTaskName());
+
             if (task.getLeash().getStatus()!=READY &&
                     task.getLeash().getStatus()!=RUN){
                 r |= taskPool.checkTaskArray(task);
@@ -104,11 +111,26 @@ public class DownloadService extends IntentService {
         return r;
     }
 
-    private boolean checkExecutePush(){
+    private synchronized boolean checkWaitTaskStatus(){
+        DownloadTask task;
+        boolean r = false;
+        for (int i = 0; i < taskPool.getWaitPool().size(); i++) {
+            task = taskPool.getWaitPool().valueAt(i);
+            if (!task.getSeed().isShutdown()){
+                task.getSeed().setShutdown(true);
+            }
+        }
+        return r;
+    }
+
+    private synchronized boolean checkExecutePush(){
         boolean r = false;
         DownloadTask task;
         for (int i = 0; i < taskPool.getExecutionPool().size(); i++) {
             task = taskPool.getExecutionPool().valueAt(i);
+
+            Logger.log(Logger.Type.DEBUG, " task checkExecutePush  task bePush="+task.isBePush() +"    taskName="+task.getTaskName());
+
             if (!task.isBePush()){
                 OkHttpManger.getInstance().downloadFileAsyn(task);
                 task.setBePush(true);
@@ -121,9 +143,9 @@ public class DownloadService extends IntentService {
     /**
      *
      * */
-    public boolean addTask(DownloadTask task){
+    public synchronized boolean addTask(DownloadTask task){
         int code =  taskPool.addTask(task);
-        if (code == DownloadStatus.ADD_FAIL){
+        if (code == DownloadStatus.ADD_FAIL || code == DownloadStatus.TASK_POOL_FULL){
             return false;
         }else {
             return true;
@@ -141,7 +163,9 @@ public class DownloadService extends IntentService {
 
     public boolean pauseTask(DownloadTask task){
         task.getLeash().setStatus(PAUSE);
-        return taskPool.checkTaskArray(task);
+//        task.getSeed().setShutdown(true);
+        return true;
+//        return taskPool.checkTaskArray(task);
     }
 
     public boolean startTask(DownloadTask task){
@@ -149,11 +173,11 @@ public class DownloadService extends IntentService {
         return taskPool.checkTaskArray(task);
     }
 
-    public SparseArray<DownloadTask> getExecutionPool() {
+    public synchronized SparseArray<DownloadTask> getExecutionPool() {
         return taskPool.getExecutionPool();
     }
 
-    public SparseArray<DownloadTask> getWaitPool() {
+    public synchronized SparseArray<DownloadTask> getWaitPool() {
         return taskPool.getWaitPool();
     }
 

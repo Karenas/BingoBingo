@@ -12,6 +12,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.gmself.stidio.gm.bingobingo.downloadmanager.entity.DownloadManagerItemEntity;
+import com.gmself.studio.mg.basemodule.log_tool.Logger;
 import com.gmself.studio.mg.basemodule.net_work.download.DownloadTask;
 import com.gmself.studio.mg.basemodule.net_work.exception.BingoNetWorkException;
 import com.gmself.studio.mg.basemodule.net_work.http_core.listener.OKHttpListenerDownload;
@@ -37,10 +38,13 @@ public class DownloadManagerMainAdapter extends RecyclerView.Adapter<DownloadMan
     }
 
     public void setmList(SparseArray<DownloadTask> executePool, SparseArray<DownloadTask> waitPool) {
-        this.executePool = executePool;
+        this.executePool = executePool.clone();
         this.waitPool = waitPool;
         count = this.executePool.size() + this.waitPool.size();
+        Logger.log(Logger.Type.DEBUG, "task adapterSetList   executePool = "+ this.executePool +" | waitPool= "+ this.waitPool);
+        Logger.log(Logger.Type.DEBUG, "task adapterSetList   executePool size = "+ this.executePool.size() +" | waitPool size = "+ this.waitPool.size());
     }
+
 
     public interface OnItemClickListener {
         void onItemClick(View view, int position);
@@ -78,7 +82,7 @@ public class DownloadManagerMainAdapter extends RecyclerView.Adapter<DownloadMan
             item = waitPool.valueAt(i);
         }
         holder.task_name_tv.setText(item.getTaskName());
-//        holder.task_pb.setProgress(0);
+        holder.task_pb.setProgress((int) item.getLeash().getPercent());
 //        holder.speed_tv.setText(item.getLeash().getStatus());
         item.getLeash().setListener(new OKHttpListenerDownload() {
             @Override

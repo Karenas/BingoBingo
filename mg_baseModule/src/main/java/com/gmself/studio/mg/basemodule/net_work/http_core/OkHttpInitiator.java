@@ -483,19 +483,23 @@ public class OkHttpInitiator {
 
 
     public void downloadFileAsyn(final DownloadTask downloadTask) {
-        Logger.log(Logger.Type.DEBUG, "  下载 downloadFileInNewThread");
         getObservableDownloadFile(downloadTask.getSeed()).subscribeOn(Schedulers.newThread()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<DownloadProgress>() {
             @Override
             public void onCompleted() {
-                if (null==downloadTask.getListener())
-                    return;
-
                 if (downloadTask.getTotalSize() <= downloadTask.getLeash().getCompletionSize()){
+                    Logger.log(Logger.Type.DEBUG, " task download onCompleted   taskName ="+downloadTask.getTaskName()+" total size = "+
+                            downloadTask.getTotalSize()+"    completionSize = "+ downloadTask.getLeash().getCompletionSize());
+                    Logger.log(Logger.Type.DEBUG, " task download onCompleted   taskName ="+downloadTask.getTaskName());
                     downloadTask.getLeash().setStatus(DownloadStatus.COMPLETE);
-                    downloadTask.getListener().onSuccess();
+
+                    if (null!=downloadTask.getListener())
+                        downloadTask.getListener().onSuccess();
+                }else {
+                    downloadTask.getLeash().setStatus(DownloadStatus.PAUSE);
                 }
 
-                downloadTask.getListener().onFinally();
+                if (null!=downloadTask.getListener())
+                    downloadTask.getListener().onFinally();
             }
 
             @Override
@@ -505,6 +509,8 @@ public class OkHttpInitiator {
 
             @Override
             public void onNext(DownloadProgress downloadProgress) {
+//                Logger.log(Logger.Type.DEBUG, " task download onNext   taskName ="+downloadTask.getTaskName()+" total size = "+
+//                        downloadProgress.getTotalSize()+"    completionSize = "+ downloadProgress.getCompletionSize());
                 downloadTask.setTotalSize(downloadProgress.getTotalSize());
                 downloadTask.getLeash().setPercent(downloadProgress.getPercent());
                 downloadTask.getLeash().setCompletionSize(downloadProgress.getCompletionSize());

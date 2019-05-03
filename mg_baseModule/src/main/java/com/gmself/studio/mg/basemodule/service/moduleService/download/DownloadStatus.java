@@ -14,6 +14,7 @@ import java.lang.annotation.Target;
 
 public class DownloadStatus {
 
+    public static final int TASK_POOL_FULL = 0;
     public static final int ALREADY_INSIDE = 1;
 
     public static final int ADD_IN_EXECUTE_POOL = 2;

@@ -30,11 +30,11 @@ public class MGThreadTool {
     /**
      * 结果回调并非在当前线程，而是主线程执行
      * */
-    public<DataProcess extends MGThreadTool_processing> void doProcess(DataProcess dataProcess){
+    public <DataProcess extends MGThreadTool_processing> void doProcess(DataProcess dataProcess){
         ThreadPoolManager.getInstance().execute(new DataProcessTask(dataProcess));
     }
 
-    public<DataProcess extends MGThreadTool_mainThread> void doInMainThread(DataProcess dataProcess){
+    public synchronized <DataProcess extends MGThreadTool_mainThread> void doInMainThread(DataProcess dataProcess){
         if (Thread.currentThread() != Looper.getMainLooper().getThread()){
             handler.sendMessage(handler.obtainMessage(-1, dataProcess));
         }else{
