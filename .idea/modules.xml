@@ -5,7 +5,6 @@
       <module fileurl="file://$PROJECT_DIR$/7zip/7zip.iml" filepath="$PROJECT_DIR$/7zip/7zip.iml" />
       <module fileurl="file://$PROJECT_DIR$/BingoBingo.iml" filepath="$PROJECT_DIR$/BingoBingo.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/aria2c/aria2c.iml" filepath="$PROJECT_DIR$/aria2c/aria2c.iml" />
       <module fileurl="file://$PROJECT_DIR$/bb_ocr/bb_ocr.iml" filepath="$PROJECT_DIR$/bb_ocr/bb_ocr.iml" />
       <module fileurl="file://$PROJECT_DIR$/downloadmanager/downloadmanager.iml" filepath="$PROJECT_DIR$/downloadmanager/downloadmanager.iml" />
       <module fileurl="file://$PROJECT_DIR$/weather_flutter/.android/Flutter/flutter.iml" filepath="$PROJECT_DIR$/weather_flutter/.android/Flutter/flutter.iml" />
@@ -13,6 +12,7 @@
       <module fileurl="file://$PROJECT_DIR$/ijkplayer/ijkplayer.iml" filepath="$PROJECT_DIR$/ijkplayer/ijkplayer.iml" />
       <module fileurl="file://$PROJECT_DIR$/mg_baseLib/mg_baseLib.iml" filepath="$PROJECT_DIR$/mg_baseLib/mg_baseLib.iml" />
       <module fileurl="file://$PROJECT_DIR$/mg_baseModule/mg_baseModule.iml" filepath="$PROJECT_DIR$/mg_baseModule/mg_baseModule.iml" />
+      <module fileurl="file://$PROJECT_DIR$/mg_transmission/mg_transmission.iml" filepath="$PROJECT_DIR$/mg_transmission/mg_transmission.iml" />
       <module fileurl="file://$PROJECT_DIR$/overall/overall.iml" filepath="$PROJECT_DIR$/overall/overall.iml" />
       <module fileurl="file://$PROJECT_DIR$/superflyerpage/superflyerpage.iml" filepath="$PROJECT_DIR$/superflyerpage/superflyerpage.iml" />
     </modules>

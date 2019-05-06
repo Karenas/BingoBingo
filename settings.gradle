@@ -1,4 +1,4 @@
-include ':app', ':mg_baseModule', ':overall', ':bb_ocr', ':superflyerpage', ':mg_baseLib', ':fontconversion', ':ijkplayer', ':7zip', ':downloadmanager', ':aria2c'
+include ':app', ':mg_baseModule', ':overall', ':bb_ocr', ':superflyerpage', ':mg_baseLib', ':fontconversion', ':ijkplayer', ':7zip', ':downloadmanager', ':mg_transmission'
 
 setBinding(new Binding([gradle: this]))
 evaluate(new File(

@@ -13,18 +13,18 @@ public class DownloadTask {
     private DownloadLeash leash;
 
     private boolean bePush = false;
-    private int key = -1;
+//    private int key = -1;
 
     private String taskName;
     private long totalSize;
 
-    public int getKey() {
-        return key;
-    }
-
-    public void setKey(int key) {
-        this.key = key;
-    }
+//    public int getKey() {
+//        return key;
+//    }
+//
+//    public void setKey(int key) {
+//        this.key = key;
+//    }
 
     public DownloadSeed getSeed() {
         return seed;

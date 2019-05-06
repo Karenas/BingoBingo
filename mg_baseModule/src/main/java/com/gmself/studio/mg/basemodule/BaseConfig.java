@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.gmself.studio.mg.basemodule.environment.DeviceInfo;
 import com.gmself.studio.mg.basemodule.log_tool.Logger;
+import com.gmself.studio.mg.basemodule.service.moduleService.download.DownloadTaskPool;
 import com.gmself.studio.mg.basemodule.utils.dirUtil.DirsTools;
 
 /**
@@ -30,6 +31,7 @@ public class BaseConfig {
     public void initData(Context context){
         initDirPath(context.getApplicationContext());
         initLogger(context.getApplicationContext());
+        initDownloadPool();
     }
 
     public void initDeviceInfo(Context context){
@@ -43,4 +45,12 @@ public class BaseConfig {
     private void initLogger(Context context){
         Logger.init(context);
     }
+
+    private void initDownloadPool(){
+        int maxNum = 10;
+        int parallelNum = 3;
+
+        DownloadTaskPool.getInstance().init(parallelNum, maxNum);
+    }
+
 }

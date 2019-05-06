@@ -17,6 +17,7 @@ import com.gmself.studio.mg.basemodule.net_work.download.DownloadTask;
 import com.gmself.studio.mg.basemodule.net_work.exception.BingoNetWorkException;
 import com.gmself.studio.mg.basemodule.net_work.http_core.listener.OKHttpListenerDownload;
 
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -24,8 +25,8 @@ import java.util.List;
  */
 
 public class DownloadManagerMainAdapter extends RecyclerView.Adapter<DownloadManagerMainAdapter.MyViewHolder> implements View.OnClickListener,View.OnLongClickListener {
-    private SparseArray<DownloadTask> executePool;
-    private SparseArray<DownloadTask> waitPool;
+    private LinkedList<DownloadTask> executePool;
+    private LinkedList<DownloadTask> waitPool;
 
     private int count = 0;
 
@@ -37,7 +38,7 @@ public class DownloadManagerMainAdapter extends RecyclerView.Adapter<DownloadMan
         this.mContext = mContext;
     }
 
-    public void setmList(SparseArray<DownloadTask> executePool, SparseArray<DownloadTask> waitPool) {
+    public void setmList(LinkedList<DownloadTask> executePool, LinkedList<DownloadTask> waitPool) {
         this.executePool = executePool;
         this.waitPool = waitPool;
         count = this.executePool.size() + this.waitPool.size();
@@ -77,12 +78,12 @@ public class DownloadManagerMainAdapter extends RecyclerView.Adapter<DownloadMan
         DownloadTask item;
         if (position < executePool.size()){
             int i = executePool.size() - 1 -position;
-            item = executePool.valueAt(i);
+            item = executePool.get(i);
             Logger.log(Logger.Type.DEBUG, "task adapterSetList   onBindViewHolder in execute taskName="+item.getTaskName());
 
         }else {
             int i = (count - executePool.size()) - 1  - (position - executePool.size());
-            item = waitPool.valueAt(i);
+            item = waitPool.get(i);
             Logger.log(Logger.Type.DEBUG, "task adapterSetList   onBindViewHolder in wait taskName="+item.getTaskName());
 
         }

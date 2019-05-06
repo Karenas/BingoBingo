@@ -5,6 +5,8 @@ import android.util.SparseArray;
 import com.gmself.studio.mg.basemodule.log_tool.Logger;
 import com.gmself.studio.mg.basemodule.net_work.download.DownloadTask;
 
+import java.util.LinkedList;
+
 import static com.gmself.studio.mg.basemodule.service.moduleService.download.DownloadStatus.READY;
 
 /**
@@ -13,22 +15,29 @@ import static com.gmself.studio.mg.basemodule.service.moduleService.download.Dow
 
 public class DownloadTaskPool {
 
-    private SparseArray<DownloadTask> executionPool;
-    private SparseArray<DownloadTask> waitPool;
+    private static DownloadTaskPool instance = new DownloadTaskPool();
+
+    public static DownloadTaskPool getInstance(){
+        return instance;
+    }
+
+    private LinkedList<DownloadTask> executionPool;
+    private LinkedList<DownloadTask> waitPool;
 
     private int parallelNum;
     private int maxNum;
 
     private volatile int taskCount = 0;
 
-    private int key = -1;
+    public DownloadTaskPool() {
+    }
 
-    public DownloadTaskPool(int parallelNum, int maxNum) {
+    public void init(int parallelNum, int maxNum) {
         this.parallelNum = parallelNum;
         this.maxNum = maxNum;
 
-        executionPool = new SparseArray<>(this.parallelNum);
-        waitPool = new SparseArray<>(this.maxNum);
+        executionPool = new LinkedList<>();
+        waitPool = new LinkedList<>();
     }
 
     public synchronized @MG_DownloadStatus int addTask(DownloadTask downloadTask){
@@ -37,19 +46,19 @@ public class DownloadTaskPool {
             return returnCode(DownloadStatus.TASK_POOL_FULL);
         }
 
-        if (executionPool.indexOfValue(downloadTask) > 0 || waitPool.indexOfValue(downloadTask) > 0){
+        if (executionPool.contains(downloadTask) || waitPool.contains(downloadTask)){
             Logger.log(Logger.Type.DEBUG, " task add to already has  taskName="+downloadTask.getTaskName());
             return returnCode(DownloadStatus.ALREADY_INSIDE);
         }
-        if (executionPool.valueAt(parallelNum-1) == null){ //需保持执行队列对象连续排列
-            downloadTask.setKey(key+=1);
-            executionPool.put(downloadTask.getKey(), downloadTask);
+        if (executionPool.size() < parallelNum){ //需保持执行队列对象连续排列
+//            downloadTask.setKey(key+=1);
+            executionPool.add(downloadTask);
             Logger.log(Logger.Type.DEBUG, " task add to executeLoop  taskName="+downloadTask.getTaskName());
             return returnCode(DownloadStatus.ADD_IN_EXECUTE_POOL);
         }else if (taskCount < maxNum){ //需在关键点统计任务个数
-            downloadTask.setKey(key+=1);
+//            downloadTask.setKey(key+=1);
             downloadTask.getLeash().setStatus(DownloadStatus.PAUSE);
-            waitPool.put(downloadTask.getKey(), downloadTask);
+            waitPool.add(downloadTask);
             Logger.log(Logger.Type.DEBUG, " task add to waitLoop  taskName="+downloadTask.getTaskName());
             return returnCode(DownloadStatus.ADD_IN_WAIT_POOL);
         }{
@@ -58,19 +67,19 @@ public class DownloadTaskPool {
         }
     }
 
-    public synchronized @MG_DownloadStatus int removeTask(int key, @MG_DownloadStatus int status){
-        if (status == DownloadStatus.RUN){
-            if (executionPool.indexOfKey(key) < 0){
+    public synchronized @MG_DownloadStatus int removeTask(DownloadTask task){
+        if (task.getLeash().getStatus() == DownloadStatus.RUN){
+            if (!executionPool.contains(task)){
                 return returnCode(DownloadStatus.REMOVE_FAIL);
             }else {
-                executionPool.remove(key);
+                executionPool.remove(task);
                 return returnCode(DownloadStatus.REMOVE_SUCCESS);
             }
         }else {
-            if (waitPool.indexOfKey(key) < 0){
+            if (!waitPool.contains(task)){
                 return returnCode(DownloadStatus.REMOVE_FAIL);
             }else {
-                waitPool.remove(key);
+                waitPool.remove(task);
                 return returnCode(DownloadStatus.REMOVE_SUCCESS);
             }
         }
@@ -80,14 +89,14 @@ public class DownloadTaskPool {
      * @return false: 未找到task ; true: task 已在正确的array中存放
      * */
     public synchronized boolean checkTaskArray(DownloadTask downloadTask){
-        assert downloadTask.getKey() >=0 ;
+//        assert downloadTask.getKey() >=0 ;
 
         if (downloadTask.getLeash().getStatus() == DownloadStatus.RUN || downloadTask.getLeash().getStatus() == READY){
 
-            if (executionPool.indexOfKey(downloadTask.getKey()) < 0){
+            if (!executionPool.contains(downloadTask)){
 
-                if (executionPool.valueAt(parallelNum-1) != null){
-                    DownloadTask lastExecuteTask = executionPool.valueAt(parallelNum-1);
+                if (executionPool.size() >= parallelNum){
+                    DownloadTask lastExecuteTask = executionPool.getLast();
                     lastExecuteTask.getLeash().setStatus(DownloadStatus.PAUSE);
                     turnArray(executionPool, waitPool, lastExecuteTask);
                 }
@@ -97,12 +106,12 @@ public class DownloadTaskPool {
                 return true;
             }
         }else {
-            if (waitPool.indexOfKey(downloadTask.getKey()) < 0){
+            if (!waitPool.contains(downloadTask)){
                 boolean r = turnArray(executionPool, waitPool, downloadTask);
                 Logger.log(Logger.Type.DEBUG, "task !!!!!!!!!!   r = "+r+"   taskName="+downloadTask.getTaskName());
                 DownloadTask task;
                 for (int i = 0; i < waitPool.size(); i++) {
-                    task = waitPool.valueAt(i);
+                    task = waitPool.get(i);
                     if (task!=null && task.getLeash().getStatus()==DownloadStatus.PAUSE){
                         task.getLeash().setStatus(DownloadStatus.READY);
                         task.getSeed().setShutdown(false);
@@ -119,21 +128,21 @@ public class DownloadTaskPool {
         }
     }
 
-    public synchronized SparseArray<DownloadTask> getExecutionPool() {
+    public synchronized LinkedList<DownloadTask> getExecutionPool() {
         return executionPool;
     }
 
-    public synchronized SparseArray<DownloadTask> getWaitPool() {
+    public synchronized LinkedList<DownloadTask> getWaitPool() {
         return waitPool;
     }
 
-    private boolean turnArray(SparseArray<DownloadTask> from, SparseArray<DownloadTask> to, DownloadTask downloadTask){
-        if (from.indexOfValue(downloadTask) < 0){
+    private boolean turnArray(LinkedList<DownloadTask> from, LinkedList<DownloadTask> to, DownloadTask downloadTask){
+        if (!from.contains(downloadTask)){
             return false;
         }
         downloadTask.setBePush(false);
-        from.remove(downloadTask.getKey());
-        to.put(downloadTask.getKey(), downloadTask);
+        from.remove(downloadTask);
+        to.add(downloadTask);
         return true;
     }
 

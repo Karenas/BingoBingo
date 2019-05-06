@@ -24,6 +24,7 @@ import com.gmself.studio.mg.basemodule.service.ServiceCallBackManager;
 import com.gmself.studio.mg.basemodule.service.ServiceCallBackType;
 
 import java.io.UnsupportedEncodingException;
+import java.util.LinkedList;
 
 import static com.gmself.studio.mg.basemodule.service.moduleService.download.DownloadStatus.PAUSE;
 import static com.gmself.studio.mg.basemodule.service.moduleService.download.DownloadStatus.READY;
@@ -39,10 +40,7 @@ public class DownloadService extends IntentService {
 
     private int interval = 2000;
 
-    private int maxNum = 10;
-    private int parallelNum = 3;
 
-    private DownloadTaskPool taskPool = new DownloadTaskPool(parallelNum, maxNum);
 
     public DownloadService() {
         super("DownloadService");
@@ -99,13 +97,13 @@ public class DownloadService extends IntentService {
     private synchronized boolean checkExecuteTaskStatus(){
         DownloadTask task;
         boolean r = false;
-        for (int i = 0; i < taskPool.getExecutionPool().size(); i++) {
-            task = taskPool.getExecutionPool().valueAt(i);
+        for (int i = 0; i < DownloadTaskPool.getInstance().getExecutionPool().size(); i++) {
+            task = DownloadTaskPool.getInstance().getExecutionPool().get(i);
             Logger.log(Logger.Type.DEBUG, " task checkExecuteTaskStatus  task status="+task.getLeash().getStatus() +"    taskName="+task.getTaskName());
 
             if (task.getLeash().getStatus()!=READY &&
                     task.getLeash().getStatus()!=RUN){
-                r |= taskPool.checkTaskArray(task);
+                r |= DownloadTaskPool.getInstance().checkTaskArray(task);
             }
         }
         return r;
@@ -114,8 +112,8 @@ public class DownloadService extends IntentService {
     private synchronized boolean checkWaitTaskStatus(){
         DownloadTask task;
         boolean r = false;
-        for (int i = 0; i < taskPool.getWaitPool().size(); i++) {
-            task = taskPool.getWaitPool().valueAt(i);
+        for (int i = 0; i < DownloadTaskPool.getInstance().getWaitPool().size(); i++) {
+            task = DownloadTaskPool.getInstance().getWaitPool().get(i);
             if (!task.getSeed().isShutdown()){
                 task.getSeed().setShutdown(true);
             }
@@ -126,8 +124,8 @@ public class DownloadService extends IntentService {
     private synchronized boolean checkExecutePush(){
         boolean r = false;
         DownloadTask task;
-        for (int i = 0; i < taskPool.getExecutionPool().size(); i++) {
-            task = taskPool.getExecutionPool().valueAt(i);
+        for (int i = 0; i < DownloadTaskPool.getInstance().getExecutionPool().size(); i++) {
+            task = DownloadTaskPool.getInstance().getExecutionPool().get(i);
 
             Logger.log(Logger.Type.DEBUG, " task checkExecutePush  task bePush="+task.isBePush() +"    taskName="+task.getTaskName());
 
@@ -144,7 +142,7 @@ public class DownloadService extends IntentService {
      *
      * */
     public synchronized boolean addTask(DownloadTask task){
-        int code =  taskPool.addTask(task);
+        int code =  DownloadTaskPool.getInstance().addTask(task);
         if (code == DownloadStatus.ADD_FAIL || code == DownloadStatus.TASK_POOL_FULL){
             return false;
         }else {
@@ -153,7 +151,7 @@ public class DownloadService extends IntentService {
     }
 
     public boolean stopTask(DownloadTask task){
-        int code =  taskPool.removeTask(task.getKey(), task.getLeash().getStatus());
+        int code =  DownloadTaskPool.getInstance().removeTask(task);
         if (code == DownloadStatus.REMOVE_FAIL){
             return false;
         }else {
@@ -170,15 +168,15 @@ public class DownloadService extends IntentService {
 
     public boolean startTask(DownloadTask task){
         task.getLeash().setStatus(READY);
-        return taskPool.checkTaskArray(task);
+        return DownloadTaskPool.getInstance().checkTaskArray(task);
     }
 
-    public synchronized SparseArray<DownloadTask> getExecutionPool() {
-        return taskPool.getExecutionPool().clone();
+    public synchronized LinkedList<DownloadTask> getExecutionPool() {
+        return DownloadTaskPool.getInstance().getExecutionPool();
     }
 
-    public synchronized SparseArray<DownloadTask> getWaitPool() {
-        return taskPool.getWaitPool().clone();
+    public synchronized LinkedList<DownloadTask> getWaitPool() {
+        return DownloadTaskPool.getInstance().getWaitPool();
     }
 
 }

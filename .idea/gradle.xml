@@ -10,13 +10,13 @@
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/7zip" />
             <option value="$PROJECT_DIR$/app" />
-            <option value="$PROJECT_DIR$/aria2c" />
             <option value="$PROJECT_DIR$/bb_ocr" />
             <option value="$PROJECT_DIR$/downloadmanager" />
             <option value="$PROJECT_DIR$/fontconversion" />
             <option value="$PROJECT_DIR$/ijkplayer" />
             <option value="$PROJECT_DIR$/mg_baseLib" />
             <option value="$PROJECT_DIR$/mg_baseModule" />
+            <option value="$PROJECT_DIR$/mg_transmission" />
             <option value="$PROJECT_DIR$/overall" />
             <option value="$PROJECT_DIR$/superflyerpage" />
             <option value="$PROJECT_DIR$/weather_flutter/.android/Flutter" />
