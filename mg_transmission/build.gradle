@@ -4,7 +4,7 @@ android {
     compileSdkVersion 27
 
     defaultConfig {
-        minSdkVersion 23
+        minSdkVersion 19
         targetSdkVersion 27
         versionCode 1
         versionName "1.0"
@@ -13,7 +13,8 @@ android {
         externalNativeBuild {
             cmake {
                 arguments "-DANDROID_TOOLCHAIN=clang",  //使用的编译器clang/gcc
-                        "-DANDROID_STL=gnustl_static" //cmake默认就是 gnustl_static
+                        "-DANDROID_STL=gnustl_static", //cmake默认就是 gnustl_static
+                        "-DANDROID_PLATFORM=android-19"
                 cppFlags ""
             }
         }

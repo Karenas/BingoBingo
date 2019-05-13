@@ -10,14 +10,13 @@ cmake_minimum_required(VERSION 3.4.1)
 # Gradle automatically packages shared libraries with your APK.
 
 set(LOCAL_PATH src/main/cpp/transmissionMain)
+set(STATIC_LIB_PATH ${LOCAL_PATH}/staticLibs)
+set(THIRD_INCLUDE_PATH ${LOCAL_PATH}/transmissionIncludes/third-party)
+set(TRANSMISSION_INCLUDE_PATH ${LOCAL_PATH}/transmissionIncludes/libtransmission)
 
-include_directories(${LOCAL_PATH}
-                    ${LOCAL_PATH}/libevent/include/include
-                    ${LOCAL_PATH}/libevent/include/android
-                    ${LOCAL_PATH}/libevent/include/WIN32-Code
-                    )
+include_directories(${LOCAL_PATH})
 
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -v -g2 -gdwarf-2 -O0 -x c++-header -DEMBEDDED -fno-rtti -fno-omit-frame-pointer -mthumb -fno-exceptions -mfloat-abi=softfp -fno-short-enums")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -v -g2 -gdwarf-2 -O0 -x c++-header -DEMBEDDED -fno-rtti -fno-omit-frame-pointer -mthumb -fno-exceptions -mfloat-abi=softfp -fno-short-enums -DANDROID_PLATFORM=android-19")
 # set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DANDROID_NDK -fexceptions -DNDEBUG -D_REENTRANT -DENV_UNIX -DEXTERNAL_CODECS -DUNICODE -D_UNICODE -DUNIX_USE_WIN_FILE -Wno-c++11-narrowing")
 
 add_library(
@@ -47,7 +46,7 @@ find_library(
 # can link multiple libraries, such as libraries you define in this
 # build script, prebuilt third-party libraries, or system libraries.
 
-ADD_SUBDIRECTORY(${LOCAL_PATH}/libevent)
+ ADD_SUBDIRECTORY(${LOCAL_PATH}/libtransmission)
 
 target_link_libraries(
                     # Specifies the target library.
@@ -55,5 +54,12 @@ target_link_libraries(
                     # Links the target library to the log library
                     # included in the NDK.
                      ${log-lib}
-                     event
+                    libtransmission
+                    ${STATIC_LIB_PATH}/lib_libcrypto.a
+                    ${STATIC_LIB_PATH}/liblibcurl.a
+                    ${STATIC_LIB_PATH}/liblibdht.a
+                    ${STATIC_LIB_PATH}/liblibevent.a
+                    ${STATIC_LIB_PATH}/liblibnatpmp.a
+                    ${STATIC_LIB_PATH}/liblibsqlite.a
+                    ${STATIC_LIB_PATH}/libminiupnp.a
                      )
