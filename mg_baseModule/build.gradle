@@ -50,5 +50,4 @@ dependencies {
     //    implementation 'jp.wasabeef:glide-transformations:2.0.0'
     implementation project(':7zip')
     api project(':flutter')
-    implementation project(':mg_transmission')
 }

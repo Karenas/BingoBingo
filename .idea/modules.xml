@@ -12,7 +12,6 @@
       <module fileurl="file://$PROJECT_DIR$/ijkplayer/ijkplayer.iml" filepath="$PROJECT_DIR$/ijkplayer/ijkplayer.iml" />
       <module fileurl="file://$PROJECT_DIR$/mg_baseLib/mg_baseLib.iml" filepath="$PROJECT_DIR$/mg_baseLib/mg_baseLib.iml" />
       <module fileurl="file://$PROJECT_DIR$/mg_baseModule/mg_baseModule.iml" filepath="$PROJECT_DIR$/mg_baseModule/mg_baseModule.iml" />
-      <module fileurl="file://$PROJECT_DIR$/mg_transmission/mg_transmission.iml" filepath="$PROJECT_DIR$/mg_transmission/mg_transmission.iml" />
       <module fileurl="file://$PROJECT_DIR$/overall/overall.iml" filepath="$PROJECT_DIR$/overall/overall.iml" />
       <module fileurl="file://$PROJECT_DIR$/superflyerpage/superflyerpage.iml" filepath="$PROJECT_DIR$/superflyerpage/superflyerpage.iml" />
       <module fileurl="file://$PROJECT_DIR$/test/test.iml" filepath="$PROJECT_DIR$/test/test.iml" />

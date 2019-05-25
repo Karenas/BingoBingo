@@ -1,3 +1,0 @@
-创建这个文件夹的原因：
-
-当使用libtransmission工程时，include了openssl的头文件，由于openssl与transmission是两个功能的工程，考虑到独立性，故与transmissionIncludes分离。

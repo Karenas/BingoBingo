@@ -16,6 +16,7 @@ import com.gmself.stidio.gm.bingobingo.R;
 import com.gmself.stidio.gm.bingobingo.downloadmanager.DownloadManagerActivity;
 import com.gmself.studio.mg.basemodule.arouter.ENUM_RouterE;
 import com.gmself.studio.mg.basemodule.arouter.Manager_RouterM;
+import com.gmself.studio.mg.basemodule.download.DownloadManager;
 import com.gmself.studio.mg.basemodule.entity.LocationBasic;
 import com.gmself.studio.mg.basemodule.entity.User;
 import com.gmself.studio.mg.basemodule.environment.DeviceInfo;
@@ -62,8 +63,9 @@ public class MainActivity extends BaseActivity {
             public void onClick(View v) {
 //                Manager_RouterM.getInstance().router_goto(ENUM_RouterE.ACTIVITY_OVERALL_HOME);
 //                Manager_RouterM.getInstance().router_goto(ENUM_RouterE.ACTIVITY_DOWNLOAD_MANAGER_MAIN);
-                Intent intent = new Intent(MainActivity.this, DownloadManagerActivity.class);
-                startActivity(intent);
+                DownloadManager.getInstance().test();
+//                Intent intent = new Intent(MainActivity.this, DownloadManagerActivity.class);
+//                startActivity(intent);
 
 //                if (downloadService == null){
 //                    return;
@@ -86,8 +88,8 @@ public class MainActivity extends BaseActivity {
 
     @Override
     public void setFunction() {
-        requestPermission(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, PermissionTag.WRITE_EXTERNAL_STORAGE);
-        startDownloadService();
+//        requestPermission(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, PermissionTag.WRITE_EXTERNAL_STORAGE);
+//        startDownloadService();
     }
 
     private void registerGetCityIDListener(){
